@@ -1,0 +1,549 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic_bundle bundles package with polyfills 1`] = `
+"(function(global) {
+
+global.__DEV__ = false;
+
+global.__BUNDLE_START_TIME__ = global.nativePerformanceNow ? global.nativePerformanceNow() : Date.now();
+})(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
+(function(global) {
+
+'use strict';
+
+global.require = _require;
+global.__d = define;
+
+var modules = Object.create(null);
+if (__DEV__) {
+  var verboseNamesToModuleIds = Object.create(null);
+}
+
+function define(factory, moduleId, dependencyMap) {
+  if (moduleId in modules) {
+    return;
+  }
+  modules[moduleId] = {
+    dependencyMap: dependencyMap,
+    exports: undefined,
+    factory: factory,
+    hasError: false,
+    isInitialized: false
+  };
+  if (__DEV__) {
+    modules[moduleId].hot = createHotReloadingObject();
+
+    var _verboseName = arguments[3];
+    if (_verboseName) {
+      modules[moduleId].verboseName = _verboseName;
+      verboseNamesToModuleIds[_verboseName] = moduleId;
+    }
+  }
+}
+
+function _require(moduleId) {
+  if (__DEV__ && typeof moduleId === 'string') {
+    var _verboseName2 = moduleId;
+    moduleId = verboseNamesToModuleIds[_verboseName2];
+    if (moduleId == null) {
+      throw new Error('Unknown named module: \\\\'' + _verboseName2 + '\\\\'');
+    } else {
+      console.warn('Requiring module \\\\'' + _verboseName2 + '\\\\' by name is only supported for ' + 'debugging purposes and will BREAK IN PRODUCTION!');
+    }
+  }
+
+  var moduleIdReallyIsNumber = moduleId;
+  var module = modules[moduleIdReallyIsNumber];
+  return module && module.isInitialized ? module.exports : guardedLoadModule(moduleIdReallyIsNumber, module);
+}
+
+_require.async = function (moduleId) {
+  return Promise.resolve().then(function () {
+    return _require(moduleId);
+  });
+};
+
+var inGuard = false;
+function guardedLoadModule(moduleId, module) {
+  if (!inGuard && global.ErrorUtils) {
+    inGuard = true;
+    var returnValue = void 0;
+    try {
+      returnValue = loadModuleImplementation(moduleId, module);
+    } catch (e) {
+      global.ErrorUtils.reportFatalError(e);
+    }
+    inGuard = false;
+    return returnValue;
+  } else {
+    return loadModuleImplementation(moduleId, module);
+  }
+}
+
+var ID_MASK_SHIFT = 16;
+var LOCAL_ID_MASK = ~0 >>> ID_MASK_SHIFT;
+
+function loadModuleImplementation(moduleId, module) {
+  var nativeRequire = global.nativeRequire;
+  if (!module && nativeRequire) {
+    var bundleId = moduleId >>> ID_MASK_SHIFT;
+    var localId = moduleId & LOCAL_ID_MASK;
+    nativeRequire(localId, bundleId);
+    module = modules[moduleId];
+  }
+
+  if (!module) {
+    throw unknownModuleError(moduleId);
+  }
+
+  if (module.hasError) {
+    throw moduleThrewError(moduleId, module.error);
+  }
+
+  if (__DEV__) {
+    var Systrace = _require.Systrace;
+  }
+
+  module.isInitialized = true;
+  var exports = module.exports = {};
+  var _module = module,
+      factory = _module.factory,
+      dependencyMap = _module.dependencyMap;
+
+  try {
+    if (__DEV__) {
+      Systrace.beginEvent('JS_require_' + (module.verboseName || moduleId));
+    }
+
+    var _moduleObject = { exports: exports };
+    if (__DEV__ && module.hot) {
+      _moduleObject.hot = module.hot;
+    }
+
+    factory(global, _require, _moduleObject, exports, dependencyMap);
+
+    if (!__DEV__) {
+      module.factory = undefined;
+      module.dependencyMap = undefined;
+    }
+
+    if (__DEV__) {
+      Systrace.endEvent();
+    }
+    return module.exports = _moduleObject.exports;
+  } catch (e) {
+    module.hasError = true;
+    module.error = e;
+    module.isInitialized = false;
+    module.exports = undefined;
+    throw e;
+  }
+}
+
+function unknownModuleError(id) {
+  var message = 'Requiring unknown module \\"' + id + '\\".';
+  if (__DEV__) {
+    message += 'If you are sure the module is there, try restarting Metro Bundler. ' + 'You may also want to run \`yarn\`, or \`npm install\` (depending on your environment).';
+  }
+  return Error(message);
+}
+
+function moduleThrewError(id, error) {
+  var displayName = __DEV__ && modules[id] && modules[id].verboseName || id;
+  return Error('Requiring module \\"' + displayName + '\\", which threw an exception: ' + error);
+}
+
+if (__DEV__) {
+  var createHotReloadingObject;
+
+  (function () {
+    _require.Systrace = { beginEvent: function beginEvent() {}, endEvent: function endEvent() {} };
+
+    _require.getModules = function () {
+      return modules;
+    };
+
+    createHotReloadingObject = function createHotReloadingObject() {
+      var hot = {
+        acceptCallback: null,
+        accept: function accept(callback) {
+          hot.acceptCallback = callback;
+        }
+      };
+      return hot;
+    };
+
+    var acceptAll = function acceptAll(dependentModules, inverseDependencies) {
+      if (!dependentModules || dependentModules.length === 0) {
+        return true;
+      }
+
+      var notAccepted = dependentModules.filter(function (module) {
+        return !accept(module, undefined, inverseDependencies);
+      });
+
+      var parents = [];
+      for (var i = 0; i < notAccepted.length; i++) {
+        if (inverseDependencies[notAccepted[i]].length === 0) {
+          return false;
+        }
+
+        parents.push.apply(parents, babelHelpers.toConsumableArray(inverseDependencies[notAccepted[i]]));
+      }
+
+      return acceptAll(parents, inverseDependencies);
+    };
+
+    var accept = function accept(id, factory, inverseDependencies) {
+      var mod = modules[id];
+
+      if (!mod && factory) {
+        define(factory, id);
+        return true;
+      }
+
+      var hot = mod.hot;
+
+      if (!hot) {
+        console.warn('Cannot accept module because Hot Module Replacement ' + 'API was not installed.');
+        return false;
+      }
+
+      if (factory) {
+        mod.factory = factory;
+      }
+      mod.hasError = false;
+      mod.isInitialized = false;
+      _require(id);
+
+      if (hot.acceptCallback) {
+        hot.acceptCallback();
+        return true;
+      } else {
+        if (!inverseDependencies) {
+          throw new Error('Undefined \`inverseDependencies\`');
+        }
+
+        return acceptAll(inverseDependencies[id], inverseDependencies);
+      }
+    };
+
+    global.__accept = accept;
+  })();
+}
+})(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
+(function(global) {
+
+'use strict';
+
+if (!Object.keys) {
+  Object.keys = function () {};
+}
+})(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
+(function(global) {
+
+'use strict';
+
+if (!String.prototype.repeat) {
+  String.prototype.repeat = function () {};
+}
+})(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
+__d(/* /TestBundle.js */function(global, require, module, exports) {
+
+'use strict';
+
+var Bar = require(5); // 5 = ./Bar
+var Foo = require(6); // 6 = ./Foo
+
+module.exports = { Foo: Foo, Bar: Bar };
+}, 0);
+__d(/* /Bar.js */function(global, require, module, exports) {
+
+'use strict';
+
+var Foo = require(6); // 6 = ./Foo
+
+module.exports = { type: 'bar', foo: Foo.type };
+}, 5);
+__d(/* /Foo.js */function(global, require, module, exports) {
+
+'use strict';
+
+var asset = require(7); // 7 = ./test.png
+
+module.exports = { type: 'foo', asset: asset };
+}, 6);
+__d(/* /test.png */function(global, require, module, exports) {module.exports=require(8).registerAsset({\\"__packager_asset\\":true,\\"httpServerLocation\\":\\"/assets\\",\\"width\\":8,\\"height\\":8,\\"scales\\":[1],\\"hash\\":\\"77d45c1f7fa73c0f6c444a830dc42f67\\",\\"name\\":\\"test\\",\\"type\\":\\"png\\"}); // 8 = /AssetRegistry
+}, 7);
+__d(/* /AssetRegistry.js */function(global, require, module, exports) {
+
+'use strict';
+}, 8);
+;require(0);"
+`;
+
+exports[`basic_bundle bundles package without polyfills 1`] = `
+"(function(global) {
+
+global.__DEV__ = false;
+
+global.__BUNDLE_START_TIME__ = global.nativePerformanceNow ? global.nativePerformanceNow() : Date.now();
+})(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
+(function(global) {
+
+'use strict';
+
+global.require = _require;
+global.__d = define;
+
+var modules = Object.create(null);
+if (__DEV__) {
+  var verboseNamesToModuleIds = Object.create(null);
+}
+
+function define(factory, moduleId, dependencyMap) {
+  if (moduleId in modules) {
+    return;
+  }
+  modules[moduleId] = {
+    dependencyMap: dependencyMap,
+    exports: undefined,
+    factory: factory,
+    hasError: false,
+    isInitialized: false
+  };
+  if (__DEV__) {
+    modules[moduleId].hot = createHotReloadingObject();
+
+    var _verboseName = arguments[3];
+    if (_verboseName) {
+      modules[moduleId].verboseName = _verboseName;
+      verboseNamesToModuleIds[_verboseName] = moduleId;
+    }
+  }
+}
+
+function _require(moduleId) {
+  if (__DEV__ && typeof moduleId === 'string') {
+    var _verboseName2 = moduleId;
+    moduleId = verboseNamesToModuleIds[_verboseName2];
+    if (moduleId == null) {
+      throw new Error('Unknown named module: \\\\'' + _verboseName2 + '\\\\'');
+    } else {
+      console.warn('Requiring module \\\\'' + _verboseName2 + '\\\\' by name is only supported for ' + 'debugging purposes and will BREAK IN PRODUCTION!');
+    }
+  }
+
+  var moduleIdReallyIsNumber = moduleId;
+  var module = modules[moduleIdReallyIsNumber];
+  return module && module.isInitialized ? module.exports : guardedLoadModule(moduleIdReallyIsNumber, module);
+}
+
+_require.async = function (moduleId) {
+  return Promise.resolve().then(function () {
+    return _require(moduleId);
+  });
+};
+
+var inGuard = false;
+function guardedLoadModule(moduleId, module) {
+  if (!inGuard && global.ErrorUtils) {
+    inGuard = true;
+    var returnValue = void 0;
+    try {
+      returnValue = loadModuleImplementation(moduleId, module);
+    } catch (e) {
+      global.ErrorUtils.reportFatalError(e);
+    }
+    inGuard = false;
+    return returnValue;
+  } else {
+    return loadModuleImplementation(moduleId, module);
+  }
+}
+
+var ID_MASK_SHIFT = 16;
+var LOCAL_ID_MASK = ~0 >>> ID_MASK_SHIFT;
+
+function loadModuleImplementation(moduleId, module) {
+  var nativeRequire = global.nativeRequire;
+  if (!module && nativeRequire) {
+    var bundleId = moduleId >>> ID_MASK_SHIFT;
+    var localId = moduleId & LOCAL_ID_MASK;
+    nativeRequire(localId, bundleId);
+    module = modules[moduleId];
+  }
+
+  if (!module) {
+    throw unknownModuleError(moduleId);
+  }
+
+  if (module.hasError) {
+    throw moduleThrewError(moduleId, module.error);
+  }
+
+  if (__DEV__) {
+    var Systrace = _require.Systrace;
+  }
+
+  module.isInitialized = true;
+  var exports = module.exports = {};
+  var _module = module,
+      factory = _module.factory,
+      dependencyMap = _module.dependencyMap;
+
+  try {
+    if (__DEV__) {
+      Systrace.beginEvent('JS_require_' + (module.verboseName || moduleId));
+    }
+
+    var _moduleObject = { exports: exports };
+    if (__DEV__ && module.hot) {
+      _moduleObject.hot = module.hot;
+    }
+
+    factory(global, _require, _moduleObject, exports, dependencyMap);
+
+    if (!__DEV__) {
+      module.factory = undefined;
+      module.dependencyMap = undefined;
+    }
+
+    if (__DEV__) {
+      Systrace.endEvent();
+    }
+    return module.exports = _moduleObject.exports;
+  } catch (e) {
+    module.hasError = true;
+    module.error = e;
+    module.isInitialized = false;
+    module.exports = undefined;
+    throw e;
+  }
+}
+
+function unknownModuleError(id) {
+  var message = 'Requiring unknown module \\"' + id + '\\".';
+  if (__DEV__) {
+    message += 'If you are sure the module is there, try restarting Metro Bundler. ' + 'You may also want to run \`yarn\`, or \`npm install\` (depending on your environment).';
+  }
+  return Error(message);
+}
+
+function moduleThrewError(id, error) {
+  var displayName = __DEV__ && modules[id] && modules[id].verboseName || id;
+  return Error('Requiring module \\"' + displayName + '\\", which threw an exception: ' + error);
+}
+
+if (__DEV__) {
+  var createHotReloadingObject;
+
+  (function () {
+    _require.Systrace = { beginEvent: function beginEvent() {}, endEvent: function endEvent() {} };
+
+    _require.getModules = function () {
+      return modules;
+    };
+
+    createHotReloadingObject = function createHotReloadingObject() {
+      var hot = {
+        acceptCallback: null,
+        accept: function accept(callback) {
+          hot.acceptCallback = callback;
+        }
+      };
+      return hot;
+    };
+
+    var acceptAll = function acceptAll(dependentModules, inverseDependencies) {
+      if (!dependentModules || dependentModules.length === 0) {
+        return true;
+      }
+
+      var notAccepted = dependentModules.filter(function (module) {
+        return !accept(module, undefined, inverseDependencies);
+      });
+
+      var parents = [];
+      for (var i = 0; i < notAccepted.length; i++) {
+        if (inverseDependencies[notAccepted[i]].length === 0) {
+          return false;
+        }
+
+        parents.push.apply(parents, babelHelpers.toConsumableArray(inverseDependencies[notAccepted[i]]));
+      }
+
+      return acceptAll(parents, inverseDependencies);
+    };
+
+    var accept = function accept(id, factory, inverseDependencies) {
+      var mod = modules[id];
+
+      if (!mod && factory) {
+        define(factory, id);
+        return true;
+      }
+
+      var hot = mod.hot;
+
+      if (!hot) {
+        console.warn('Cannot accept module because Hot Module Replacement ' + 'API was not installed.');
+        return false;
+      }
+
+      if (factory) {
+        mod.factory = factory;
+      }
+      mod.hasError = false;
+      mod.isInitialized = false;
+      _require(id);
+
+      if (hot.acceptCallback) {
+        hot.acceptCallback();
+        return true;
+      } else {
+        if (!inverseDependencies) {
+          throw new Error('Undefined \`inverseDependencies\`');
+        }
+
+        return acceptAll(inverseDependencies[id], inverseDependencies);
+      }
+    };
+
+    global.__accept = accept;
+  })();
+}
+})(typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : this);
+__d(/* /TestBundle.js */function(global, require, module, exports) {
+
+'use strict';
+
+var Bar = require(3); // 3 = ./Bar
+var Foo = require(4); // 4 = ./Foo
+
+module.exports = { Foo: Foo, Bar: Bar };
+}, 0);
+__d(/* /Bar.js */function(global, require, module, exports) {
+
+'use strict';
+
+var Foo = require(4); // 4 = ./Foo
+
+module.exports = { type: 'bar', foo: Foo.type };
+}, 3);
+__d(/* /Foo.js */function(global, require, module, exports) {
+
+'use strict';
+
+var asset = require(5); // 5 = ./test.png
+
+module.exports = { type: 'foo', asset: asset };
+}, 4);
+__d(/* /test.png */function(global, require, module, exports) {module.exports=require(6).registerAsset({\\"__packager_asset\\":true,\\"httpServerLocation\\":\\"/assets\\",\\"width\\":8,\\"height\\":8,\\"scales\\":[1],\\"hash\\":\\"77d45c1f7fa73c0f6c444a830dc42f67\\",\\"name\\":\\"test\\",\\"type\\":\\"png\\"}); // 6 = /AssetRegistry
+}, 5);
+__d(/* /AssetRegistry.js */function(global, require, module, exports) {
+
+'use strict';
+}, 6);
+;require(0);"
+`;
