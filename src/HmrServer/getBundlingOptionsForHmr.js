@@ -7,21 +7,21 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @format
- * @flow
+ * 
  */
 
-'use strict';
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
-import type {Options as BundleOptions} from '../DeltaBundler';
+
 
 /**
- * Module to easily create the needed configuration parameters needed for the
- * bundler for HMR (since a lot of params are not relevant in this use case).
- */
+                                                                                                                                                                                                                                                                      * Module to easily create the needed configuration parameters needed for the
+                                                                                                                                                                                                                                                                      * bundler for HMR (since a lot of params are not relevant in this use case).
+                                                                                                                                                                                                                                                                      */
 module.exports = function getBundlingOptionsForHmr(
-  entryFile: string,
-  platform: string,
-): BundleOptions {
+entryFile,
+platform)
+{
   // These are the really meaningful bundling options. The others below are
   // not relevant for HMR.
   const mainOptions = {
@@ -30,11 +30,11 @@ module.exports = function getBundlingOptionsForHmr(
     hot: true,
     minify: false,
     platform,
-    wrapModules: false,
-  };
+    wrapModules: false };
 
-  return {
-    ...mainOptions,
+
+  return _extends({},
+  mainOptions, {
     assetPlugins: [],
     dev: true,
     entryModuleOnly: false,
@@ -47,6 +47,6 @@ module.exports = function getBundlingOptionsForHmr(
     runBeforeMainModule: [],
     runModule: false,
     sourceMapUrl: '',
-    unbundle: false,
-  };
+    unbundle: false });
+
 };

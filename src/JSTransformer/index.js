@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,27 +15,27 @@
 const Logger = require('../Logger');
 
 const debug = require('debug')('Metro:JStransformer');
-const denodeify: Denodeify = require('denodeify');
+const denodeify = require('denodeify');
 const invariant = require('fbjs/lib/invariant');
 const path = require('path');
 const util = require('util');
 const workerFarm = require('../worker-farm');
 
-import type {Data as TransformData, Options as WorkerOptions} from './worker';
-import type {LocalPath} from '../node-haste/lib/toLocalPath';
-import type {MappingsMap} from '../lib/SourceMap';
-import typeof {
-  minify as Minify,
-  transformAndExtractDependencies as TransformAndExtractDependencies,
-} from './worker';
 
-type CB<T> = (?Error, ?T) => mixed;
-type Denodeify = (<A, B, C, T>(
-  (A, B, C, CB<T>) => void,
-) => (A, B, C) => Promise<T>) &
-  (<A, B, C, D, E, T>(
-    (A, B, C, D, E, CB<T>) => void,
-  ) => (A, B, C, D, E) => Promise<T>);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Avoid memory leaks caused in workers. This number seems to be a good enough number
 // to avoid any memory leak while not slowing down initial builds.
@@ -50,63 +50,63 @@ const MAX_RETRIES = 2;
 
 function makeFarm(worker, methods, timeout, maxConcurrentWorkers) {
   return workerFarm(
-    {
-      autoStart: true,
-      /**
-       * We whitelist only what would work. For example `--inspect` doesn't
-       * work in the workers because it tries to open the same debugging port.
-       * Feel free to add more cases to the RegExp. A whitelist is preferred, to
-       * guarantee robustness when upgrading node, etc.
-       */
-      execArgv: process.execArgv.filter(
-        arg =>
-          /^--stack[_-]trace[_-]limit=[0-9]+$/.test(arg) ||
-          /^--heap[_-]growing[_-]percent=[0-9]+$/.test(arg) ||
-          /^--max[_-]old[_-]space[_-]size=[0-9]+$/.test(arg),
-      ),
-      maxConcurrentCallsPerWorker: 1,
-      maxConcurrentWorkers,
-      maxCallsPerWorker: MAX_CALLS_PER_WORKER,
-      maxCallTime: timeout,
-      maxRetries: MAX_RETRIES,
-    },
-    worker,
-    methods,
-  );
+  {
+    autoStart: true,
+    /**
+                      * We whitelist only what would work. For example `--inspect` doesn't
+                      * work in the workers because it tries to open the same debugging port.
+                      * Feel free to add more cases to the RegExp. A whitelist is preferred, to
+                      * guarantee robustness when upgrading node, etc.
+                      */
+    execArgv: process.execArgv.filter(
+    arg =>
+    /^--stack[_-]trace[_-]limit=[0-9]+$/.test(arg) ||
+    /^--heap[_-]growing[_-]percent=[0-9]+$/.test(arg) ||
+    /^--max[_-]old[_-]space[_-]size=[0-9]+$/.test(arg)),
+
+    maxConcurrentCallsPerWorker: 1,
+    maxConcurrentWorkers,
+    maxCallsPerWorker: MAX_CALLS_PER_WORKER,
+    maxCallTime: timeout,
+    maxRetries: MAX_RETRIES },
+
+  worker,
+  methods);
+
 }
 
-type Reporters = {
-  +stdoutChunk: (chunk: string) => mixed,
-  +stderrChunk: (chunk: string) => mixed,
-};
+
+
+
+
 
 class Transformer {
-  _workers: {[name: string]: Function};
-  _transformModulePath: string;
-  _transform: (
-    transform: string,
-    filename: string,
-    localPath: LocalPath,
-    sourceCode: string,
-    options: WorkerOptions,
-  ) => Promise<TransformData>;
-  _usesFarm: boolean;
-  minify: (
-    filename: string,
-    code: string,
-    sourceMap: ?MappingsMap,
-  ) => Promise<{code: string, map: ?MappingsMap}>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   constructor(
-    transformModulePath: string,
-    maxWorkers: number,
-    reporters: Reporters,
-    workerPath: ?string,
-  ) {
+  transformModulePath,
+  maxWorkers,
+  reporters,
+  workerPath)
+  {
     invariant(
-      path.isAbsolute(transformModulePath),
-      'transform module path should be absolute',
-    );
+    path.isAbsolute(transformModulePath),
+    'transform module path should be absolute');
+
     if (!workerPath) {
       workerPath = require.resolve('./worker');
     }
@@ -116,11 +116,11 @@ class Transformer {
     if (maxWorkers > 1) {
       this._usesFarm = true;
       const farm = makeFarm(
-        workerPath,
-        ['minify', 'transformAndExtractDependencies'],
-        TRANSFORM_TIMEOUT_INTERVAL,
-        maxWorkers,
-      );
+      workerPath,
+      ['minify', 'transformAndExtractDependencies'],
+      TRANSFORM_TIMEOUT_INTERVAL,
+      maxWorkers);
+
       farm.stdout.on('data', chunk => {
         reporters.stdoutChunk(chunk.toString('utf8'));
       });
@@ -134,75 +134,75 @@ class Transformer {
       this._workers = require(workerPath);
     }
     this._transform = denodeify(
-      (this._workers
-        .transformAndExtractDependencies: TransformAndExtractDependencies),
-    );
-    this.minify = denodeify((this._workers.minify: Minify));
+    this._workers.
+    transformAndExtractDependencies);
+
+    this.minify = denodeify(this._workers.minify);
   }
 
   kill() {
     if (this._usesFarm && this._workers) {
       /* $FlowFixMe(>=0.56.0 site=react_native_fb) This comment suppresses an
-       * error found when Flow v0.56 was deployed. To see the error delete this
-       * comment and run Flow. */
+                                           * error found when Flow v0.56 was deployed. To see the error delete this
+                                           * comment and run Flow. */
       workerFarm.end(this._workers);
     }
   }
 
   transformFile(
-    fileName: string,
-    localPath: LocalPath,
-    code: string,
-    options: WorkerOptions,
-  ) {
+  fileName,
+  localPath,
+  code,
+  options)
+  {
     if (!this._transform) {
       /* $FlowFixMe(>=0.54.0 site=react_native_fb) This comment suppresses an
-       * error found when Flow v0.54 was deployed. To see the error delete this
-       * comment and run Flow. */
+                            * error found when Flow v0.54 was deployed. To see the error delete this
+                            * comment and run Flow. */
       return Promise.reject(new Error('No transform module'));
     }
     debug('transforming file', fileName);
     /* $FlowFixMe(>=0.54.0 site=react_native_fb) This comment suppresses an
-     * error found when Flow v0.54 was deployed. To see the error delete this
-     * comment and run Flow. */
+                                           * error found when Flow v0.54 was deployed. To see the error delete this
+                                           * comment and run Flow. */
     return this._transform(
-      this._transformModulePath,
-      fileName,
-      localPath,
-      code,
-      options,
-    )
-      .then(data => {
-        Logger.log(data.transformFileStartLogEntry);
-        Logger.log(data.transformFileEndLogEntry);
-        debug('done transforming file', fileName);
-        return data.result;
-      })
-      .catch(error => {
-        if (error.type === 'TimeoutError') {
-          const timeoutErr = new Error(
-            `TimeoutError: transforming ${fileName} took longer than ` +
-              `${TRANSFORM_TIMEOUT_INTERVAL / 1000} seconds.\n`,
-          );
-          /* $FlowFixMe: monkey-patch Error */
-          timeoutErr.type = 'TimeoutError';
-          throw timeoutErr;
-        } else if (error.type === 'ProcessTerminatedError') {
-          const uncaughtError = new Error(
-            'Uncaught error in the transformer worker: ' +
-              this._transformModulePath,
-          );
-          /* $FlowFixMe: monkey-patch Error */
-          uncaughtError.type = 'ProcessTerminatedError';
-          throw uncaughtError;
-        }
+    this._transformModulePath,
+    fileName,
+    localPath,
+    code,
+    options).
 
-        throw formatError(error, fileName);
-      });
-  }
+    then(data => {
+      Logger.log(data.transformFileStartLogEntry);
+      Logger.log(data.transformFileEndLogEntry);
+      debug('done transforming file', fileName);
+      return data.result;
+    }).
+    catch(error => {
+      if (error.type === 'TimeoutError') {
+        const timeoutErr = new Error(
+        `TimeoutError: transforming ${fileName} took longer than ` +
+        `${TRANSFORM_TIMEOUT_INTERVAL / 1000} seconds.\n`);
 
-  static TransformError;
-}
+        /* $FlowFixMe: monkey-patch Error */
+        timeoutErr.type = 'TimeoutError';
+        throw timeoutErr;
+      } else if (error.type === 'ProcessTerminatedError') {
+        const uncaughtError = new Error(
+        'Uncaught error in the transformer worker: ' +
+        this._transformModulePath);
+
+        /* $FlowFixMe: monkey-patch Error */
+        uncaughtError.type = 'ProcessTerminatedError';
+        throw uncaughtError;
+      }
+
+      throw formatError(error, fileName);
+    });
+  }}
+
+
+
 
 Transformer.TransformError = TransformError;
 

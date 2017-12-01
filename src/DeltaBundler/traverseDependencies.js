@@ -6,245 +6,245 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
-'use strict';
+'use strict';var _slicedToArray = function () {function sliceIterator(arr, i) {var _arr = [];var _n = true;var _d = false;var _e = undefined;try {for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {_arr.push(_s.value);if (i && _arr.length === i) break;}} catch (err) {_d = true;_e = err;} finally {try {if (!_n && _i["return"]) _i["return"]();} finally {if (_d) throw _e;}}return _arr;}return function (arr, i) {if (Array.isArray(arr)) {return arr;} else if (Symbol.iterator in Object(arr)) {return sliceIterator(arr, i);} else {throw new TypeError("Invalid attempt to destructure non-iterable instance");}};}();
 
-import type {Options as JSTransformerOptions} from '../JSTransformer/worker';
-import type DependencyGraph from '../node-haste/DependencyGraph';
 
-export type DependencyEdge = {|
-  dependencies: Map<string, string>,
-  inverseDependencies: Set<string>,
-  path: string,
-|};
 
-export type DependencyEdges = Map<string, DependencyEdge>;
 
-type Result = {added: Set<string>, deleted: Set<string>};
+
+
+
+
+
+
+
+
+
 
 /**
- * Dependency Traversal logic for the Delta Bundler. This method calculates
- * the modules that should be included in the bundle by traversing the
- * dependency graph.
- * Instead of traversing the whole graph each time, it just calculates the
- * difference between runs by only traversing the added/removed dependencies.
- * To do so, it uses the passed `edges` paramater, which is a data structure
- * that contains the whole status of the dependency graph. During the
- * recalculation of the dependencies, it mutates the edges graph.
- *
- * The paths parameter contains the absolute paths of the root files that the
- * method should traverse. Normally, these paths should be the modified files
- * since the last traversal.
- */
-async function traverseDependencies(
-  paths: Array<string>,
-  dependencyGraph: DependencyGraph,
-  transformOptions: JSTransformerOptions,
-  edges: DependencyEdges,
-  onProgress?: (numProcessed: number, total: number) => mixed = () => {},
-): Promise<Result> {
-  const changes = await Promise.all(
-    paths.map(path =>
-      traverseDependenciesForSingleFile(
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Dependency Traversal logic for the Delta Bundler. This method calculates
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * the modules that should be included in the bundle by traversing the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * dependency graph.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Instead of traversing the whole graph each time, it just calculates the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * difference between runs by only traversing the added/removed dependencies.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * To do so, it uses the passed `edges` paramater, which is a data structure
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * that contains the whole status of the dependency graph. During the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * recalculation of the dependencies, it mutates the edges graph.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       *
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * The paths parameter contains the absolute paths of the root files that the
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * method should traverse. Normally, these paths should be the modified files
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * since the last traversal.
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */let traverseDependencies = (() => {var _ref = _asyncToGenerator(
+  function* (
+  paths,
+  dependencyGraph,
+  transformOptions,
+  edges)
+
+  {let onProgress = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function () {};
+    const changes = yield Promise.all(
+    paths.map(function (path) {return (
+        traverseDependenciesForSingleFile(
         path,
         dependencyGraph,
         transformOptions,
         edges,
-        onProgress,
-      ),
-    ),
-  );
+        onProgress));}));
 
-  const added = new Set();
-  const deleted = new Set();
 
-  for (const change of changes) {
-    for (const path of change.added) {
-      added.add(path);
+
+
+    const added = new Set();
+    const deleted = new Set();
+
+    for (const change of changes) {
+      for (const path of change.added) {
+        added.add(path);
+      }
+      for (const path of change.deleted) {
+        deleted.add(path);
+      }
     }
-    for (const path of change.deleted) {
-      deleted.add(path);
-    }
-  }
 
-  return {
-    added,
-    deleted,
-  };
-}
+    return {
+      added,
+      deleted };
 
-async function initialTraverseDependencies(
-  path: string,
-  dependencyGraph: DependencyGraph,
-  transformOptions: JSTransformerOptions,
-  edges: DependencyEdges,
-  onProgress?: (numProcessed: number, total: number) => mixed = () => {},
-) {
-  createEdge(path, edges);
+  });return function traverseDependencies(_x, _x2, _x3, _x4) {return _ref.apply(this, arguments);};})();let initialTraverseDependencies = (() => {var _ref2 = _asyncToGenerator(
 
-  return await traverseDependenciesForSingleFile(
+  function* (
+  path,
+  dependencyGraph,
+  transformOptions,
+  edges)
+
+  {let onProgress = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function () {};
+    createEdge(path, edges);
+
+    return yield traverseDependenciesForSingleFile(
     path,
     dependencyGraph,
     transformOptions,
     edges,
-    onProgress,
-  );
-}
+    onProgress);
 
-async function traverseDependenciesForSingleFile(
-  path: string,
-  dependencyGraph: DependencyGraph,
-  transformOptions: JSTransformerOptions,
-  edges: DependencyEdges,
-  onProgress?: (numProcessed: number, total: number) => mixed = () => {},
-): Promise<Result> {
-  const edge = edges.get(path);
+  });return function initialTraverseDependencies(_x6, _x7, _x8, _x9) {return _ref2.apply(this, arguments);};})();let traverseDependenciesForSingleFile = (() => {var _ref3 = _asyncToGenerator(
 
-  // If the passed edge does not exist does not exist in the graph, ignore it.
-  if (!edge) {
-    return {added: new Set(), deleted: new Set()};
-  }
+  function* (
+  path,
+  dependencyGraph,
+  transformOptions,
+  edges)
 
-  // Get the absolute path of all sub-dependencies (some of them could have been
-  // moved but maintain the same relative path).
-  const currentDependencies = resolveDependencies(
-    path,
-    await dependencyGraph.getShallowDependencies(path, transformOptions),
+  {let onProgress = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : function () {};
+    const edge = edges.get(path);
+
+    // If the passed edge does not exist does not exist in the graph, ignore it.
+    if (!edge) {
+      return { added: new Set(), deleted: new Set() };
+    }
+
+    // Get the absolute path of all sub-dependencies (some of them could have been
+    // moved but maintain the same relative path).
+    const currentDependencies = resolveDependencies(
+    path, (
+    yield dependencyGraph.getShallowDependencies(path, transformOptions)),
     dependencyGraph,
-    transformOptions,
-  );
+    transformOptions);
 
-  const previousDependencies = new Set(edge.dependencies.values());
 
-  const nonNullEdge = edge;
+    const previousDependencies = new Set(edge.dependencies.values());
 
-  let numProcessed = 0;
-  let total = currentDependencies.size;
+    const nonNullEdge = edge;
 
-  const deleted = Array.from(edge.dependencies.entries())
-    .map(([relativePath, absolutePath]) => {
+    let numProcessed = 0;
+    let total = currentDependencies.size;
+
+    const deleted = Array.from(edge.dependencies.entries()).
+    map(function (_ref4) {var _ref5 = _slicedToArray(_ref4, 2);let relativePath = _ref5[0],absolutePath = _ref5[1];
       if (!currentDependencies.has(absolutePath)) {
         return removeDependency(nonNullEdge, relativePath, edges);
       } else {
         return undefined;
       }
-    })
-    .filter(Boolean);
+    }).
+    filter(Boolean);
 
-  // Check all the module dependencies and start traversing the tree from each
-  // added and removed dependency, to get all the modules that have to be added
-  // and removed from the dependency graph.
-  const added = await Promise.all(
+    // Check all the module dependencies and start traversing the tree from each
+    // added and removed dependency, to get all the modules that have to be added
+    // and removed from the dependency graph.
+    const added = yield Promise.all(
     Array.from(
-      currentDependencies,
-    ).map(async ([absolutePath, relativePath]) => {
-      let newDependencies;
+    currentDependencies).
+    map((() => {var _ref6 = _asyncToGenerator(function* (_ref7) {var _ref8 = _slicedToArray(_ref7, 2);let absolutePath = _ref8[0],relativePath = _ref8[1];
+        let newDependencies;
 
-      if (!previousDependencies.has(absolutePath)) {
-        newDependencies = await addDependency(
+        if (!previousDependencies.has(absolutePath)) {
+          newDependencies = yield addDependency(
           nonNullEdge,
           relativePath,
           dependencyGraph,
           transformOptions,
           edges,
-          () => {
+          function () {
             total++;
             onProgress(numProcessed, total);
           },
-          () => {
+          function () {
             numProcessed++;
             onProgress(numProcessed, total);
-          },
-        );
-      } else {
-        newDependencies = new Set();
-      }
+          });
 
-      return newDependencies;
-    }),
-  );
+        } else {
+          newDependencies = new Set();
+        }
 
-  return {
-    added: flatten(added),
-    deleted: flatten(deleted),
-  };
-}
+        return newDependencies;
+      });return function (_x16) {return _ref6.apply(this, arguments);};})()));
 
-async function addDependency(
-  parentEdge: DependencyEdge,
-  relativePath: string,
-  dependencyGraph: DependencyGraph,
-  transformOptions: JSTransformerOptions,
-  edges: DependencyEdges,
-  onDependencyAdd: () => mixed,
-  onDependencyAdded: () => mixed,
-): Promise<Set<string>> {
-  const parentModule = dependencyGraph.getModuleForPath(parentEdge.path);
-  const module = dependencyGraph.resolveDependency(
+
+    return {
+      added: flatten(added),
+      deleted: flatten(deleted) };
+
+  });return function traverseDependenciesForSingleFile(_x11, _x12, _x13, _x14) {return _ref3.apply(this, arguments);};})();let addDependency = (() => {var _ref9 = _asyncToGenerator(
+
+  function* (
+  parentEdge,
+  relativePath,
+  dependencyGraph,
+  transformOptions,
+  edges,
+  onDependencyAdd,
+  onDependencyAdded)
+  {
+    const parentModule = dependencyGraph.getModuleForPath(parentEdge.path);
+    const module = dependencyGraph.resolveDependency(
     parentModule,
     relativePath,
-    transformOptions.platform,
-  );
+    transformOptions.platform);
 
-  // Update the parent edge to keep track of the new dependency.
-  parentEdge.dependencies.set(relativePath, module.path);
 
-  let dependencyEdge = edges.get(module.path);
+    // Update the parent edge to keep track of the new dependency.
+    parentEdge.dependencies.set(relativePath, module.path);
 
-  // The new dependency was already in the graph, we don't need to do anything.
-  if (dependencyEdge) {
+    let dependencyEdge = edges.get(module.path);
+
+    // The new dependency was already in the graph, we don't need to do anything.
+    if (dependencyEdge) {
+      dependencyEdge.inverseDependencies.add(parentEdge.path);
+
+      return new Set();
+    }
+
+    onDependencyAdd();
+
+    // Create the new edge and traverse all its subdependencies, looking for new
+    // subdependencies recursively.
+    dependencyEdge = createEdge(module.path, edges);
     dependencyEdge.inverseDependencies.add(parentEdge.path);
 
-    return new Set();
-  }
+    const addedDependencies = new Set([dependencyEdge.path]);
 
-  onDependencyAdd();
-
-  // Create the new edge and traverse all its subdependencies, looking for new
-  // subdependencies recursively.
-  dependencyEdge = createEdge(module.path, edges);
-  dependencyEdge.inverseDependencies.add(parentEdge.path);
-
-  const addedDependencies = new Set([dependencyEdge.path]);
-
-  const shallowDeps = await dependencyGraph.getShallowDependencies(
+    const shallowDeps = yield dependencyGraph.getShallowDependencies(
     dependencyEdge.path,
-    transformOptions,
-  );
+    transformOptions);
 
-  const nonNullDependencyEdge = dependencyEdge;
 
-  const added = await Promise.all(
-    shallowDeps.map(dep =>
-      addDependency(
+    const nonNullDependencyEdge = dependencyEdge;
+
+    const added = yield Promise.all(
+    shallowDeps.map(function (dep) {return (
+        addDependency(
         nonNullDependencyEdge,
         dep,
         dependencyGraph,
         transformOptions,
         edges,
         onDependencyAdd,
-        onDependencyAdded,
-      ),
-    ),
-  );
+        onDependencyAdded));}));
 
-  for (const newDependency of flatten(added)) {
-    addedDependencies.add(newDependency);
-  }
 
-  onDependencyAdded();
 
-  return addedDependencies;
-}
+
+    for (const newDependency of flatten(added)) {
+      addedDependencies.add(newDependency);
+    }
+
+    onDependencyAdded();
+
+    return addedDependencies;
+  });return function addDependency(_x17, _x18, _x19, _x20, _x21, _x22, _x23) {return _ref9.apply(this, arguments);};})();function _asyncToGenerator(fn) {return function () {var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {function step(key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {return Promise.resolve(value).then(function (value) {step("next", value);}, function (err) {step("throw", err);});}}return step("next");});};}
 
 function removeDependency(
-  parentEdge: DependencyEdge,
-  relativePath: string,
-  edges: DependencyEdges,
-): Set<string> {
+parentEdge,
+relativePath,
+edges)
+{
   // Find the actual edge that represents the removed dependency. We do this
   // from the egdes data structure, since the file may have been deleted
   // already.
@@ -281,26 +281,26 @@ function removeDependency(
   return removedDependencies;
 }
 
-function createEdge(path: string, edges: DependencyEdges): DependencyEdge {
+function createEdge(path, edges) {
   const edge = {
     dependencies: new Map(),
     inverseDependencies: new Set(),
-    path,
-  };
+    path };
+
   edges.set(path, edge);
 
   return edge;
 }
 
-function destroyEdge(edge: DependencyEdge, edges: DependencyEdges) {
+function destroyEdge(edge, edges) {
   edges.delete(edge.path);
 }
 
 function resolveEdge(
-  parentEdge: DependencyEdge,
-  relativePath: string,
-  edges: DependencyEdges,
-): ?DependencyEdge {
+parentEdge,
+relativePath,
+edges)
+{
   const absolutePath = parentEdge.dependencies.get(relativePath);
   if (!absolutePath) {
     return null;
@@ -310,26 +310,26 @@ function resolveEdge(
 }
 
 function resolveDependencies(
-  parentPath,
-  dependencies: Array<string>,
-  dependencyGraph: DependencyGraph,
-  transformOptions: JSTransformerOptions,
-): Map<string, string> {
+parentPath,
+dependencies,
+dependencyGraph,
+transformOptions)
+{
   const parentModule = dependencyGraph.getModuleForPath(parentPath);
 
   return new Map(
-    dependencies.map(relativePath => [
-      dependencyGraph.resolveDependency(
-        parentModule,
-        relativePath,
-        transformOptions.platform,
-      ).path,
-      relativePath,
-    ]),
-  );
+  dependencies.map(relativePath => [
+  dependencyGraph.resolveDependency(
+  parentModule,
+  relativePath,
+  transformOptions.platform).
+  path,
+  relativePath]));
+
+
 }
 
-function flatten<T>(input: Iterable<Iterable<T>>): Set<T> {
+function flatten(input) {
   const output = new Set();
 
   for (const items of input) {
@@ -343,5 +343,4 @@ function flatten<T>(input: Iterable<Iterable<T>>): Set<T> {
 
 module.exports = {
   initialTraverseDependencies,
-  traverseDependencies,
-};
+  traverseDependencies };

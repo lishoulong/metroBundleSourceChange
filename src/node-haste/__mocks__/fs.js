@@ -9,10 +9,10 @@
  * @format
  */
 
-'use strict';
+'use strict';var _require =
 
-const {EventEmitter} = require('events');
-const {dirname} = require.requireActual('path');
+require('events');const EventEmitter = _require.EventEmitter;var _require$requireActua =
+require.requireActual('path');const dirname = _require$requireActua.dirname;
 const fs = jest.genMockFromModule('fs');
 const path = require('path');
 const stream = require.requireActual('stream');
@@ -20,14 +20,14 @@ const stream = require.requireActual('stream');
 const noop = () => {};
 
 function asyncCallback(cb) {
-  return function() {
+  return function () {
     setImmediate(() => cb.apply(this, arguments));
   };
 }
 
 const mtime = {
-  getTime: () => Math.ceil(Math.random() * 10000000),
-};
+  getTime: () => Math.ceil(Math.random() * 10000000) };
+
 
 fs.realpath.mockImplementation((filepath, callback) => {
   callback = asyncCallback(callback);
@@ -64,7 +64,7 @@ fs.readdir.mockImplementation((filepath, callback) => {
   return callback(null, Object.keys(node));
 });
 
-fs.readFile.mockImplementation(function(filepath, encoding, callback) {
+fs.readFile.mockImplementation(function (filepath, encoding, callback) {
   callback = asyncCallback(callback);
   if (arguments.length === 2) {
     callback = encoding;
@@ -88,7 +88,7 @@ fs.readFile.mockImplementation(function(filepath, encoding, callback) {
   }
 });
 
-fs.readFileSync.mockImplementation(function(filepath, encoding) {
+fs.readFileSync.mockImplementation(function (filepath, encoding) {
   const node = getToNode(filepath);
   // dir check
   if (node && typeof node === 'object' && node.SYMLINK == null) {
@@ -107,8 +107,8 @@ function makeStatResult(node) {
     isFile: () => node != null && typeof node === 'string',
     isSocket: () => false,
     isSymbolicLink: () => isSymlink,
-    mtime,
-  };
+    mtime };
+
 }
 
 function statSync(filepath) {
@@ -152,7 +152,7 @@ fs.lstat.mockImplementation((filepath, callback) => {
 
 fs.lstatSync.mockImplementation(lstatSync);
 
-fs.open.mockImplementation(function(filepath) {
+fs.open.mockImplementation(function (filepath) {
   const callback = arguments[arguments.length - 1] || noop;
   let data, error, fd;
   try {
@@ -166,35 +166,35 @@ fs.open.mockImplementation(function(filepath) {
   }
   if (data != null) {
     /* global Buffer: true */
-    fd = {buffer: new Buffer(data, 'utf8'), position: 0};
+    fd = { buffer: new Buffer(data, 'utf8'), position: 0 };
   }
 
   callback(error, fd);
 });
 
 fs.read.mockImplementation(
-  (fd, buffer, writeOffset, length, position, callback = noop) => {
-    let bytesWritten;
-    try {
-      if (position == null || position < 0) {
-        ({position} = fd);
-      }
-      bytesWritten = fd.buffer.copy(
-        buffer,
-        writeOffset,
-        position,
-        position + length,
-      );
-      fd.position = position + bytesWritten;
-    } catch (e) {
-      callback(Error('invalid argument'));
-      return;
+function (fd, buffer, writeOffset, length, position) {let callback = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : noop;
+  let bytesWritten;
+  try {
+    if (position == null || position < 0) {
+      position = fd.position;
     }
-    callback(null, bytesWritten, buffer);
-  },
-);
+    bytesWritten = fd.buffer.copy(
+    buffer,
+    writeOffset,
+    position,
+    position + length);
 
-fs.close.mockImplementation((fd, callback = noop) => {
+    fd.position = position + bytesWritten;
+  } catch (e) {
+    callback(Error('invalid argument'));
+    return;
+  }
+  callback(null, bytesWritten, buffer);
+});
+
+
+fs.close.mockImplementation(function (fd) {let callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : noop;
   try {
     fd.buffer = fs.position = undefined;
   } catch (e) {
@@ -229,8 +229,8 @@ fs.createReadStream.mockImplementation(filepath => {
     read() {
       this.push(file, 'utf8');
       this.push(null);
-    },
-  });
+    } });
+
 });
 
 fs.createWriteStream.mockImplementation(file => {
@@ -242,8 +242,8 @@ fs.createWriteStream.mockImplementation(file => {
       const writeStream = new stream.Writable({
         write(chunk) {
           this.__chunks.push(chunk);
-        },
-      });
+        } });
+
       writeStream.__file = file;
       writeStream.__chunks = [];
       writeStream.end = jest.fn(writeStream.end);
@@ -256,7 +256,7 @@ fs.createWriteStream.mockImplementation(file => {
 });
 fs.createWriteStream.mock.returned = [];
 
-fs.__setMockFilesystem = object => (filesystem = object);
+fs.__setMockFilesystem = object => filesystem = object;
 
 const watcherListByPath = new Map();
 
@@ -286,8 +286,8 @@ fs.__triggerWatchEvent = (eventType, filename) => {
   const dirPath = path.dirname(filename);
   const dirWatchers = watcherListByPath.get(dirPath) || [];
   dirWatchers.forEach(wtc =>
-    wtc.emit('change', eventType, path.relative(dirPath, filename)),
-  );
+  wtc.emit('change', eventType, path.relative(dirPath, filename)));
+
 };
 
 function getToNode(filepath) {

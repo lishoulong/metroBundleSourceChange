@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -15,27 +15,27 @@
 const childProcess = require('child_process');
 const childModule = require.resolve('./child/index');
 
-function fork(forkModule: string, options: {|+execArgv: Array<string>|}) {
+function fork(forkModule, options) {
   const child = childProcess.fork(childModule, {
     cwd: process.cwd(),
     env: process.env,
     execArgv: options.execArgv,
-    silent: true,
-  });
+    silent: true });
 
-  child.send({module: forkModule});
+
+  child.send({ module: forkModule });
 
   // return a send() function for this child
   return {
-    send(data: {}) {
+    send(data) {
       try {
         child.send(data);
       } catch (e) {
         // this *should* be picked up by onExit and the operation requeued
       }
     },
-    child,
-  };
+    child };
+
 }
 
 module.exports = fork;

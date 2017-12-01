@@ -17,20 +17,20 @@ const jsonStableStringify = require('json-stable-stringify');
 const transformCache = new Map();
 
 const transformCacheKeyOf = props =>
-  props.filePath +
-  '-' +
-  crypto
-    .createHash('md5')
-    .update(props.sourceCode)
-    .update(
-      props.getTransformCacheKey(
-        props.sourceCode,
-        props.filePath,
-        props.transformOptions,
-      ),
-    )
-    .update(jsonStableStringify(props.transformOptions || {}))
-    .digest('hex');
+props.filePath +
+'-' +
+crypto.
+createHash('md5').
+update(props.sourceCode).
+update(
+props.getTransformCacheKey(
+props.sourceCode,
+props.filePath,
+props.transformOptions)).
+
+
+update(jsonStableStringify(props.transformOptions || {})).
+digest('hex');
 
 class TransformCacheMock {
   constructor() {
@@ -39,8 +39,8 @@ class TransformCacheMock {
       reset: () => {
         transformCache.clear();
         this.mock.lastWrite = null;
-      },
-    };
+      } };
+
   }
 
   writeSync(props) {
@@ -51,9 +51,9 @@ class TransformCacheMock {
   readSync(props) {
     return {
       result: transformCache.get(transformCacheKeyOf(props)),
-      outdatedDependencies: [],
-    };
-  }
-}
+      outdatedDependencies: [] };
 
-module.exports = {mocked: () => new TransformCacheMock()};
+  }}
+
+
+module.exports = { mocked: () => new TransformCacheMock() };

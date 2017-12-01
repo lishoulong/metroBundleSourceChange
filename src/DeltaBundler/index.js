@@ -6,41 +6,41 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
-'use strict';
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _asyncToGenerator(fn) {return function () {var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {function step(key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {return Promise.resolve(value).then(function (value) {step("next", value);}, function (err) {step("throw", err);});}}return step("next");});};}
 
 const DeltaTransformer = require('./DeltaTransformer');
 
-import type Bundler from '../Bundler';
-import type {BundleOptions} from '../Server';
 
-type MainOptions = {|
-  getPolyfills: ({platform: ?string}) => $ReadOnlyArray<string>,
-  polyfillModuleNames: $ReadOnlyArray<string>,
-|};
 
-export type Options = BundleOptions & {
-  +deltaBundleId: ?string,
-  +wrapModules: boolean,
-};
+
+
+
+
+
+
+
+
+
+
 
 /**
- * `DeltaBundler` uses the `DeltaTransformer` to build bundle deltas. This
- * module handles all the transformer instances so it can support multiple
- * concurrent clients requesting their own deltas. This is done through the
- * `deltaBundleId` options param (which maps a client to a specific delta
- * transformer).
- */
+                                                         * `DeltaBundler` uses the `DeltaTransformer` to build bundle deltas. This
+                                                         * module handles all the transformer instances so it can support multiple
+                                                         * concurrent clients requesting their own deltas. This is done through the
+                                                         * `deltaBundleId` options param (which maps a client to a specific delta
+                                                         * transformer).
+                                                         */
 class DeltaBundler {
-  _bundler: Bundler;
-  _options: MainOptions;
-  _deltaTransformers: Map<string, DeltaTransformer> = new Map();
-  _currentId: number = 0;
 
-  constructor(bundler: Bundler, options: MainOptions) {
+
+
+
+
+  constructor(bundler, options) {this._deltaTransformers = new Map();this._currentId = 0;
     this._bundler = bundler;
     this._options = options;
   }
@@ -50,38 +50,38 @@ class DeltaBundler {
     this._deltaTransformers = new Map();
   }
 
-  async getDeltaTransformer(
-    options: Options,
-  ): Promise<{deltaTransformer: DeltaTransformer, id: string}> {
-    let bundleId = options.deltaBundleId;
+  getDeltaTransformer(
+  options)
+  {var _this = this;return _asyncToGenerator(function* () {
+      let bundleId = options.deltaBundleId;
 
-    // If no bundle id is passed, generate a new one (which is going to be
-    // returned as part of the bundle, so the client can later ask for an actual
-    // delta).
-    if (!bundleId) {
-      bundleId = String(this._currentId++);
-    }
+      // If no bundle id is passed, generate a new one (which is going to be
+      // returned as part of the bundle, so the client can later ask for an actual
+      // delta).
+      if (!bundleId) {
+        bundleId = String(_this._currentId++);
+      }
 
-    let deltaTransformer = this._deltaTransformers.get(bundleId);
+      let deltaTransformer = _this._deltaTransformers.get(bundleId);
 
-    if (!deltaTransformer) {
-      deltaTransformer = await DeltaTransformer.create(
-        this._bundler,
-        this._options,
-        {
-          ...options, // The Delta Bundler does not support minifying due to
-          minify: false, // issues generating the source maps (T21699790).
-        },
-      );
+      if (!deltaTransformer) {
+        deltaTransformer = yield DeltaTransformer.create(
+        _this._bundler,
+        _this._options, _extends({},
 
-      this._deltaTransformers.set(bundleId, deltaTransformer);
-    }
+        options, { // The Delta Bundler does not support minifying due to
+          minify: false // issues generating the source maps (T21699790).
+        }));
 
-    return {
-      deltaTransformer,
-      id: bundleId,
-    };
-  }
-}
+
+        _this._deltaTransformers.set(bundleId, deltaTransformer);
+      }
+
+      return {
+        deltaTransformer,
+        id: bundleId };})();
+
+  }}
+
 
 module.exports = DeltaBundler;

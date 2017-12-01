@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -14,44 +14,44 @@
 
 const Generator = require('./Generator');
 
-import type ModuleTransport from '../../lib/ModuleTransport';
-import type {RawMapping as BabelRawMapping} from 'babel-generator';
 
-type GeneratedCodeMapping = [number, number];
-type SourceMapping = [number, number, number, number];
-type SourceMappingWithName = [number, number, number, number, string];
 
-export type RawMapping =
-  | SourceMappingWithName
-  | SourceMapping
-  | GeneratedCodeMapping;
+
+
+
+
+
+
+
+
+
 
 /**
- * Creates a source map from modules with "raw mappings", i.e. an array of
- * tuples with either 2, 4, or 5 elements:
- * generated line, generated column, source line, source line, symbol name.
- */
+                                           * Creates a source map from modules with "raw mappings", i.e. an array of
+                                           * tuples with either 2, 4, or 5 elements:
+                                           * generated line, generated column, source line, source line, symbol name.
+                                           */
 function fromRawMappings(
-  modules: $ReadOnlyArray<{
-    +map: ?Array<RawMapping>,
-    +path: string,
-    +source: string,
-    +code: string,
-  }>,
-): Generator {
+modules)
+
+
+
+
+
+{
   const generator = new Generator();
   let carryOver = 0;
 
   for (var j = 0, o = modules.length; j < o; ++j) {
-    var module = modules[j];
-    var {code, map} = module;
+    var module = modules[j];var
+    code = module.code,map = module.map;
 
     if (Array.isArray(map)) {
       addMappingsForFile(generator, map, module, carryOver);
     } else if (map != null) {
       throw new Error(
-        `Unexpected module with full source map found: ${module.path}`,
-      );
+      `Unexpected module with full source map found: ${module.path}`);
+
     }
 
     carryOver += countLines(code);
@@ -60,9 +60,9 @@ function fromRawMappings(
   return generator;
 }
 
-function compactMapping(mapping: BabelRawMapping): RawMapping {
-  const {column, line} = mapping.generated;
-  const {name, original} = mapping;
+function compactMapping(mapping) {var _mapping$generated =
+  mapping.generated;const column = _mapping$generated.column,line = _mapping$generated.line;const
+  name = mapping.name,original = mapping.original;
 
   if (original == null) {
     return [line, column];
@@ -98,15 +98,15 @@ function addMapping(generator, mapping, carryOver, columnOffset) {
     generator.addSourceMapping(line, column, mapping[2], mapping[3]);
   } else if (n === 5) {
     generator.addNamedSourceMapping(
-      line,
-      column,
-      // $FlowIssue #15579526
-      mapping[2],
-      // $FlowIssue #15579526
-      mapping[3],
-      // $FlowIssue #15579526
-      mapping[4],
-    );
+    line,
+    column,
+    // $FlowIssue #15579526
+    mapping[2],
+    // $FlowIssue #15579526
+    mapping[3],
+    // $FlowIssue #15579526
+    mapping[4]);
+
   } else {
     throw new Error(`Invalid mapping: [${mapping.join(', ')}]`);
   }

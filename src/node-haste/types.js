@@ -6,15 +6,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
 // TODO(cpojer): Create a jest-types repo.
-export type HasteFS = {
-  exists(filePath: string): boolean,
-  getAllFiles(): Array<string>,
-  matchFiles(pattern: RegExp | string): Array<string>,
-};

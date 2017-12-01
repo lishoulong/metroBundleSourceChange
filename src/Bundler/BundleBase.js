@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -14,23 +14,23 @@
 
 const ModuleTransport = require('../lib/ModuleTransport');
 
-export type FinalizeOptions = {
-  allowUpdates?: boolean,
-  runBeforeMainModule?: Array<string>,
-  runModule?: boolean,
-};
 
-export type GetSourceOptions = {
-  inlineSourceMap?: boolean,
-  dev: boolean,
-};
+
+
+
+
+
+
+
+
+
 
 class BundleBase {
-  _assets: Array<mixed>;
-  _finalized: boolean;
-  _mainModuleId: number | void;
-  _source: ?string;
-  __modules: Array<ModuleTransport>;
+
+
+
+
+
 
   constructor() {
     this._finalized = false;
@@ -43,15 +43,15 @@ class BundleBase {
     return this.__modules.length === 0 && this._assets.length === 0;
   }
 
-  getMainModuleId(): number | void {
+  getMainModuleId() {
     return this._mainModuleId;
   }
 
-  setMainModuleId(moduleId: number) {
+  setMainModuleId(moduleId) {
     this._mainModuleId = moduleId;
   }
 
-  addModule(module: ModuleTransport): number {
+  addModule(module) {
     if (!(module instanceof ModuleTransport)) {
       throw new Error('Expected a ModuleTransport object');
     }
@@ -59,7 +59,7 @@ class BundleBase {
     return this.__modules.push(module) - 1;
   }
 
-  replaceModuleAt(index: number, module: ModuleTransport) {
+  replaceModuleAt(index, module) {
     if (!(module instanceof ModuleTransport)) {
       throw new Error('Expeceted a ModuleTransport object');
     }
@@ -75,11 +75,11 @@ class BundleBase {
     return this._assets;
   }
 
-  addAsset(asset: mixed) {
+  addAsset(asset) {
     this._assets.push(asset);
   }
 
-  finalize(options: FinalizeOptions) {
+  finalize(options) {
     if (!options.allowUpdates) {
       Object.freeze(this.__modules);
       Object.freeze(this._assets);
@@ -88,7 +88,7 @@ class BundleBase {
     this._finalized = true;
   }
 
-  getSource(options: GetSourceOptions) {
+  getSource(options) {
     this.assertFinalized();
 
     if (this._source) {
@@ -103,15 +103,15 @@ class BundleBase {
     this._source = null;
   }
 
-  assertFinalized(message?: string) {
+  assertFinalized(message) {
     if (!this._finalized) {
       throw new Error(
-        message || 'Bundle needs to be finalized before getting any source',
-      );
+      message || 'Bundle needs to be finalized before getting any source');
+
     }
   }
 
-  setRamGroups(ramGroups: Array<string>) {}
-}
+  setRamGroups(ramGroups) {}}
+
 
 module.exports = BundleBase;

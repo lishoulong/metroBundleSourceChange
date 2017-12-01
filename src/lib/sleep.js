@@ -6,13 +6,13 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-function sleep(duration: number): Promise<void> {
+function sleep(duration) {
   return new Promise(resolve => {
     setTimeout(resolve, duration);
   });

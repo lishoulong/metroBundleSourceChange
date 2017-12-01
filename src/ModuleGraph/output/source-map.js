@@ -6,23 +6,22 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {FBSourceMap, IndexMapSection, IndexMap} from '../../lib/SourceMap';
 
-export type {FBSourceMap};
 
-type CreateIndexMapOptions = {|
-  file?: string,
-  sections?: Array<IndexMapSection>,
-|};
 
-exports.createIndexMap = (opts?: CreateIndexMapOptions): IndexMap => ({
+
+
+
+
+
+
+exports.createIndexMap = opts => ({
   version: 3,
   file: opts && opts.file,
-  sections: (opts && opts.sections) || [],
-});
+  sections: opts && opts.sections || [] });

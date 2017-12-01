@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
-'use strict';
+'use strict';var _require =
 
-const {Console} = require('console');
-const {Writable} = require('stream');
+require('console');const Console = _require.Console;var _require2 =
+require('stream');const Writable = _require2.Writable;
 
 const write = (_, __, callback) => callback();
-module.exports = new Console(new Writable({write, writev: write}));
+module.exports = new Console(new Writable({ write, writev: write }));

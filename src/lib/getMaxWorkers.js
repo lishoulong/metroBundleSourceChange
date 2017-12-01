@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -14,9 +14,9 @@
 
 const os = require('os');
 
-module.exports = (workers: ?number) => {
+module.exports = workers => {
   const cores = os.cpus().length;
-  return typeof workers === 'number' && Number.isInteger(workers)
-    ? Math.min(cores, workers > 0 ? workers : 1)
-    : Math.max(1, Math.ceil(cores * (0.5 + 0.5 * Math.exp(-cores * 0.07)) - 1));
+  return typeof workers === 'number' && Number.isInteger(workers) ?
+  Math.min(cores, workers > 0 ? workers : 1) :
+  Math.max(1, Math.ceil(cores * (0.5 + 0.5 * Math.exp(-cores * 0.07)) - 1));
 };

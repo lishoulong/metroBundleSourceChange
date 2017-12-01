@@ -6,34 +6,34 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {SourceMap as MappingsMap} from 'babel-core';
 
-export type IndexMapSection = {
-  map: SourceMap,
-  offset: {line: number, column: number},
-};
 
-type FBExtensions = {x_facebook_offsets: Array<number>};
 
-export type {MappingsMap};
-export type IndexMap = {
-  file?: string,
-  mappings?: void, // avoids SourceMap being a disjoint union
-  sections: Array<IndexMapSection>,
-  version: number,
-};
 
-export type FBIndexMap = IndexMap & FBExtensions;
-export type SourceMap = IndexMap | MappingsMap;
-export type FBSourceMap = FBIndexMap | (MappingsMap & FBExtensions);
 
-function isMappingsMap(map: SourceMap): %checks {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isMappingsMap(map) {
   return map.mappings !== undefined;
 }
 

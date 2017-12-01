@@ -7,42 +7,42 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @format
- * @flow
+ * 
  */
 
 /* eslint-disable */
 const Farm = require('./farm');
 
-import type {Readable} from 'stream';
+
 
 var farms = []; // keep record of farms so we can end() them if required
 
-export type FarmAPI = {|
-  methods: {[name: string]: Function},
-  stdout: Readable,
-  stderr: Readable,
-|};
+
+
+
+
+
 
 function farm(
-  options: {+execArgv: Array<string>},
-  path: string,
-  methods: Array<string>,
-): FarmAPI {
+options,
+path,
+methods)
+{
   var f = new Farm(options, path),
-    api = f.setup(methods);
+  api = f.setup(methods);
 
-  farms.push({farm: f, api: api});
+  farms.push({ farm: f, api: api });
 
   // $FlowFixMe: gotta type the Farm class.
-  const {stdout, stderr} = f;
+  const stdout = f.stdout,stderr = f.stderr;
 
   // return the public API
-  return {methods: (api: any), stdout, stderr};
+  return { methods: api, stdout, stderr };
 }
 
 function end(api, callback) {
   for (var i = 0; i < farms.length; i++)
-    if (farms[i] && farms[i].api === api) return farms[i].farm.end(callback);
+  if (farms[i] && farms[i].api === api) return farms[i].farm.end(callback);
   process.nextTick(callback.bind(null, 'Worker farm not found!'));
 }
 

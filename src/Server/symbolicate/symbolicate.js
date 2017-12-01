@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  */
 'use strict';
 
@@ -14,49 +14,49 @@ const concat = require('concat-stream');
 const debug = require('debug')('Metro:Symbolication');
 const net = require('net');
 const temp = require('temp');
-const xpipe = require('xpipe');
+const xpipe = require('xpipe');var _require =
 
-const {LazyPromise, LockingPromise} = require('./util');
-const {fork} = require('child_process');
+require('./util');const LazyPromise = _require.LazyPromise,LockingPromise = _require.LockingPromise;var _require2 =
+require('child_process');const fork = _require2.fork;
 
-export type {SourceMap as SourceMap};
-import type {SourceMap} from '../../lib/SourceMap';
 
-export type Stack = Array<{file: string, lineNumber: number, column: number}>;
-export type Symbolicate =
-  (Stack, Iterable<[string, SourceMap]>) => Promise<Stack>;
 
-const affixes = {prefix: 'metro-bundler-symbolicate', suffix: '.sock'};
+
+
+
+
+
+const affixes = { prefix: 'metro-bundler-symbolicate', suffix: '.sock' };
 const childPath = require.resolve('./worker');
 
-exports.createWorker = (): Symbolicate => {
+exports.createWorker = () => {
   // There are issues with named sockets on windows that cause the connection to
   // close too early so run the symbolicate server on a random localhost port.
-  const socket = process.platform === 'win32'
-    ? 34712
-    : xpipe.eq(temp.path(affixes));
+  const socket = process.platform === 'win32' ?
+  34712 :
+  xpipe.eq(temp.path(affixes));
   const child = new LockingPromise(new LazyPromise(() => startupChild(socket)));
 
   return (stack, sourceMaps) =>
-    child
-      .then(() => connectAndSendJob(socket, message(stack, sourceMaps)))
-      .then(JSON.parse)
-      .then(response =>
-        'error' in response
-          ? Promise.reject(new Error(response.error))
-          : response.result
-      );
+  child.
+  then(() => connectAndSendJob(socket, message(stack, sourceMaps))).
+  then(JSON.parse).
+  then(response =>
+  'error' in response ?
+  Promise.reject(new Error(response.error)) :
+  response.result);
+
 };
 
 function startupChild(socket) {
   const child = fork(childPath);
   return new Promise((resolve, reject) => {
-    child
-      .once('error', reject)
-      .once('message', () => {
-        child.removeAllListeners();
-        resolve(child);
-      });
+    child.
+    once('error', reject).
+    once('message', () => {
+      child.removeAllListeners();
+      resolve(child);
+    });
     // $FlowFixMe ChildProcess.send should accept any type.
     child.send(socket);
   });
@@ -77,5 +77,5 @@ function connectAndSendJob(socket, data) {
 }
 
 function message(stack, sourceMaps) {
-  return JSON.stringify({maps: Array.from(sourceMaps), stack});
+  return JSON.stringify({ maps: Array.from(sourceMaps), stack });
 }

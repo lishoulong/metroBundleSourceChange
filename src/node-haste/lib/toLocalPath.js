@@ -6,33 +6,33 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
-'use strict';
+'use strict';var _require =
 
-const {relative, basename} = require('path');
+require('path');const relative = _require.relative,basename = _require.basename;
 
-declare class OpaqueLocalPath {}
-export type LocalPath = OpaqueLocalPath & string;
+
+
 
 // FIXME: This function has the shortcoming of potentially returning identical
 // paths for two files in different roots.
 function toLocalPath(
-  roots: $ReadOnlyArray<string>,
-  absolutePath: string,
-): LocalPath {
+roots,
+absolutePath)
+{
   for (let i = 0; i < roots.length; i++) {
     const localPath = relative(roots[i], absolutePath);
     if (localPath[0] !== '.' || basename(absolutePath) == localPath) {
-      return (localPath: any);
+      return localPath;
     }
   }
 
   throw new Error(
-    `Expected path \`${absolutePath}\` to be relative to one of the project roots`,
-  );
+  `Expected path \`${absolutePath}\` to be relative to one of the project roots`);
+
 }
 
 module.exports = toLocalPath;

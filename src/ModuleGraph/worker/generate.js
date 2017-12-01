@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @format
- * @flow
+ * 
  */
 
 'use strict';
@@ -17,23 +17,23 @@
 const babelGenerate = require('babel-generator').default;
 
 function generate(
-  ast: Object,
-  filename: string,
-  sourceCode: string,
-  compact: boolean,
-) {
+ast,
+filename,
+sourceCode,
+compact)
+{
   const generated = babelGenerate(
-    ast,
-    {
-      comments: false,
-      compact,
-      filename,
-      sourceFileName: filename,
-      sourceMaps: true,
-      sourceMapTarget: filename,
-    },
-    sourceCode,
-  );
+  ast,
+  {
+    comments: false,
+    compact,
+    filename,
+    sourceFileName: filename,
+    sourceMaps: true,
+    sourceMapTarget: filename },
+
+  sourceCode);
+
 
   delete generated.map.sourcesContent;
   return generated;

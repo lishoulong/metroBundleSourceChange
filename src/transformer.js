@@ -8,7 +8,7 @@
  *
  * Note: This is a fork of the fb-specific transform.js
  *
- * @flow
+ * 
  * @format
  */
 'use strict';
@@ -22,34 +22,34 @@ const inlineRequiresPlugin = require('babel-preset-fbjs/plugins/inline-requires'
 const json5 = require('json5');
 const makeHMRConfig = require('babel-preset-react-native/configs/hmr');
 const path = require('path');
-const resolvePlugins = require('babel-preset-react-native/lib/resolvePlugins');
+const resolvePlugins = require('babel-preset-react-native/lib/resolvePlugins');var _require =
 
-const {compactMapping} = require('./Bundler/source-map');
+require('./Bundler/source-map');const compactMapping = _require.compactMapping;
 
-import type {Plugins as BabelPlugins} from 'babel-core';
-import type {Transformer, TransformOptions} from './JSTransformer/worker';
+
+
 
 const cacheKeyParts = [
-  fs.readFileSync(__filename),
-  require('babel-plugin-external-helpers/package.json').version,
-  require('babel-preset-fbjs/package.json').version,
-  require('babel-preset-react-native/package.json').version,
-];
+fs.readFileSync(__filename),
+require('babel-plugin-external-helpers/package.json').version,
+require('babel-preset-fbjs/package.json').version,
+require('babel-preset-react-native/package.json').version];
+
 
 /**
- * Return a memoized function that checks for the existence of a
- * project level .babelrc file, and if it doesn't exist, reads the
- * default RN babelrc file and uses that.
- */
-const getBabelRC = (function() {
-  let babelRC: ?{extends?: string, plugins: BabelPlugins} = null;
+                                                             * Return a memoized function that checks for the existence of a
+                                                             * project level .babelrc file, and if it doesn't exist, reads the
+                                                             * default RN babelrc file and uses that.
+                                                             */
+const getBabelRC = function () {
+  let babelRC = null;
 
   return function _getBabelRC(projectRoot) {
     if (babelRC !== null) {
       return babelRC;
     }
 
-    babelRC = {plugins: []};
+    babelRC = { plugins: [] };
 
     // Let's look for the .babelrc in the project root.
     // In the future let's look into adding a command line option to specify
@@ -63,14 +63,14 @@ const getBabelRC = (function() {
     // use the Babel config provided with react-native.
     if (!projectBabelRCPath || !fs.existsSync(projectBabelRCPath)) {
       babelRC = json5.parse(
-        fs.readFileSync(path.resolve(__dirname, '..', 'rn-babelrc.json')),
-      );
+      fs.readFileSync(path.resolve(__dirname, '..', 'rn-babelrc.json')));
+
 
       // Require the babel-preset's listed in the default babel config
       babelRC.presets = babelRC.presets.map(preset =>
-        // $FlowFixMe: dynamic require can't be avoided
-        require('babel-preset-' + preset),
-      );
+      // $FlowFixMe: dynamic require can't be avoided
+      require('babel-preset-' + preset));
+
       babelRC.plugins = resolvePlugins(babelRC.plugins);
     } else {
       // if we find a .babelrc file we tell babel to use it
@@ -79,23 +79,23 @@ const getBabelRC = (function() {
 
     return babelRC;
   };
-})();
+}();
 
 /**
- * Given a filename and options, build a Babel
- * config object with the appropriate plugins.
- */
+      * Given a filename and options, build a Babel
+      * config object with the appropriate plugins.
+      */
 function buildBabelConfig(filename, options) {
   const babelRC = getBabelRC(options.projectRoot);
 
   const extraConfig = {
     babelrc:
-      typeof options.enableBabelRCLookup === 'boolean'
-        ? options.enableBabelRCLookup
-        : true,
+    typeof options.enableBabelRCLookup === 'boolean' ?
+    options.enableBabelRCLookup :
+    true,
     code: false,
-    filename,
-  };
+    filename };
+
 
   let config = Object.assign({}, babelRC, extraConfig);
 
@@ -104,7 +104,7 @@ function buildBabelConfig(filename, options) {
 
   var inlineRequires = options.inlineRequires;
   var blacklist =
-    typeof inlineRequires === 'object' ? inlineRequires.blacklist : null;
+  typeof inlineRequires === 'object' ? inlineRequires.blacklist : null;
   if (inlineRequires && !(blacklist && filename in blacklist)) {
     extraPlugins.push(inlineRequiresPlugin);
   }
@@ -119,52 +119,52 @@ function buildBabelConfig(filename, options) {
   return Object.assign({}, babelRC, config);
 }
 
-type Params = {
-  filename: string,
-  options: {+retainLines?: boolean} & TransformOptions,
-  plugins?: BabelPlugins,
-  src: string,
-};
 
-function transform({filename, options, src}: Params) {
-  options = options || {platform: '', projectRoot: '', inlineRequires: false};
+
+
+
+
+
+
+function transform(_ref) {let filename = _ref.filename,options = _ref.options,src = _ref.src;
+  options = options || { platform: '', projectRoot: '', inlineRequires: false };
 
   const OLD_BABEL_ENV = process.env.BABEL_ENV;
   process.env.BABEL_ENV = options.dev ? 'development' : 'production';
 
   try {
-    const babelConfig = buildBabelConfig(filename, options);
-    const {ast, ignored} = babel.transform(src, babelConfig);
+    const babelConfig = buildBabelConfig(filename, options);var _babel$transform =
+    babel.transform(src, babelConfig);const ast = _babel$transform.ast,ignored = _babel$transform.ignored;
 
     if (ignored) {
       return {
         ast: null,
         code: src,
         filename,
-        map: null,
-      };
+        map: null };
+
     } else {
       const result = generate(
-        ast,
-        {
-          comments: false,
-          compact: false,
-          filename,
-          retainLines: !!options.retainLines,
-          sourceFileName: filename,
-          sourceMaps: true,
-        },
-        src,
-      );
+      ast,
+      {
+        comments: false,
+        compact: false,
+        filename,
+        retainLines: !!options.retainLines,
+        sourceFileName: filename,
+        sourceMaps: true },
+
+      src);
+
 
       return {
         ast,
         code: result.code,
         filename,
-        map: options.generateSourceMaps
-          ? result.map
-          : result.rawMappings.map(compactMapping),
-      };
+        map: options.generateSourceMaps ?
+        result.map :
+        result.rawMappings.map(compactMapping) };
+
     }
   } finally {
     process.env.BABEL_ENV = OLD_BABEL_ENV;
@@ -177,7 +177,6 @@ function getCacheKey() {
   return key.digest('hex');
 }
 
-module.exports = ({
+module.exports = {
   transform,
-  getCacheKey,
-}: Transformer<{+retainLines?: boolean}>);
+  getCacheKey };

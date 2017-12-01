@@ -10,20 +10,20 @@
 
 const mockColor = () => {
   return {
-    bold: () => { return { }; },
-  };
+    bold: () => {return {};} };
+
 };
 
-mockColor.bold = function() {
+mockColor.bold = function () {
   return {};
 };
 
-mockColor.bgRed = function() {
+mockColor.bgRed = function () {
   return {};
 };
 
 module.exports = {
-  dim: s =>  s,
+  dim: s => s,
   magenta: mockColor,
   white: mockColor,
   blue: mockColor,
@@ -33,5 +33,4 @@ module.exports = {
   red: mockColor,
   cyan: mockColor,
   gray: mockColor,
-  black: mockColor,
-};
+  black: mockColor };

@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -14,54 +14,54 @@
 
 const NO_OPTIONS = {};
 
-class ResolutionResponse<TModule: {hash(): string}, TOptions> {
-  dependencies: Array<TModule>;
-  mainModuleId: ?(number | string);
-  mocks: mixed;
-  numPrependedDependencies: number;
-  options: TOptions;
+class ResolutionResponse {
+
+
+
+
+
 
   // This is monkey-patched from Resolver.
-  getModuleId: ?() => number;
 
-  _mappings: {[hash: string]: Array<[string, TModule]>};
-  _finalized: boolean;
-  _mainModule: ?TModule;
 
-  constructor(options: TOptions) {
+
+
+
+
+  constructor(options) {
     this.dependencies = [];
     this.mainModuleId = null;
     this.mocks = null;
     this.numPrependedDependencies = 0;
     this.options = options;
     /* $FlowFixMe(>=0.56.0 site=react_native_fb) This comment suppresses an
-     * error found when Flow v0.56 was deployed. To see the error delete this
-     * comment and run Flow. */
+                             * error found when Flow v0.56 was deployed. To see the error delete this
+                             * comment and run Flow. */
     this._mappings = Object.create(null);
     this._finalized = false;
   }
 
-  copy(properties: {
-    dependencies?: Array<TModule>,
-    mainModuleId?: number,
-    mocks?: mixed,
-  }): ResolutionResponse<TModule, TOptions> {
-    const {
-      dependencies = this.dependencies,
-      mainModuleId = this.mainModuleId,
-      mocks = this.mocks,
-    } = properties;
+  copy(properties)
+
+
+
+  {var _properties$dependenc =
+
+
+
+
+    properties.dependencies;const dependencies = _properties$dependenc === undefined ? this.dependencies : _properties$dependenc;var _properties$mainModul = properties.mainModuleId;const mainModuleId = _properties$mainModul === undefined ? this.mainModuleId : _properties$mainModul;var _properties$mocks = properties.mocks;const mocks = _properties$mocks === undefined ? this.mocks : _properties$mocks;
 
     const numPrependedDependencies =
-      dependencies === this.dependencies ? this.numPrependedDependencies : 0;
+    dependencies === this.dependencies ? this.numPrependedDependencies : 0;
 
     /* $FlowFixMe: Flow doesn't like Object.assign on class-made objects. */
     return Object.assign(new this.constructor(this.options), this, {
       dependencies,
       mainModuleId,
       mocks,
-      numPrependedDependencies,
-    });
+      numPrependedDependencies });
+
   }
 
   _assertNotFinalized() {
@@ -76,7 +76,7 @@ class ResolutionResponse<TModule: {hash(): string}, TOptions> {
     }
   }
 
-  finalize(): Promise<this> {
+  finalize() {
     return Promise.resolve().then(() => {
       /* $FlowFixMe: _mainModule is not initialized in the constructor. */
       this.mainModuleId = this._mainModule.getName();
@@ -85,7 +85,7 @@ class ResolutionResponse<TModule: {hash(): string}, TOptions> {
     });
   }
 
-  pushDependency(module: TModule) {
+  pushDependency(module) {
     this._assertNotFinalized();
     if (this.dependencies.length === 0) {
       this._mainModule = module;
@@ -94,17 +94,17 @@ class ResolutionResponse<TModule: {hash(): string}, TOptions> {
     this.dependencies.push(module);
   }
 
-  prependDependency(module: TModule) {
+  prependDependency(module) {
     this._assertNotFinalized();
     this.dependencies.unshift(module);
     this.numPrependedDependencies += 1;
   }
 
   setResolvedDependencyPairs(
-    module: TModule,
-    pairs: Array<[string, TModule]>,
-    options: {ignoreFinalized?: boolean} = NO_OPTIONS,
-  ) {
+  module,
+  pairs)
+
+  {let options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : NO_OPTIONS;
     if (!options.ignoreFinalized) {
       this._assertNotFinalized();
     }
@@ -114,16 +114,16 @@ class ResolutionResponse<TModule: {hash(): string}, TOptions> {
     }
   }
 
-  setMocks(mocks: mixed) {
+  setMocks(mocks) {
     this.mocks = mocks;
   }
 
   getResolvedDependencyPairs(
-    module: TModule,
-  ): $ReadOnlyArray<[string, TModule]> {
+  module)
+  {
     this._assertFinalized();
     return this._mappings[module.hash()] || [];
-  }
-}
+  }}
+
 
 module.exports = ResolutionResponse;

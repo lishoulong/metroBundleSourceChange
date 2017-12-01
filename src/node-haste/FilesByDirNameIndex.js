@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
@@ -15,18 +15,18 @@
 const path = require('path');
 
 /**
- * This is a way to find files quickly given a RegExp, in a specific directory.
- * This is must faster than iterating over all the files and matching both
- * directory and RegExp at the same time.
- *
- * This was first implemented to support finding assets fast, for which we know
- * the directory, but we want to identify all variants (ex. @2x, @1x, for
- * a picture's different definition levels).
- */
+                               * This is a way to find files quickly given a RegExp, in a specific directory.
+                               * This is must faster than iterating over all the files and matching both
+                               * directory and RegExp at the same time.
+                               *
+                               * This was first implemented to support finding assets fast, for which we know
+                               * the directory, but we want to identify all variants (ex. @2x, @1x, for
+                               * a picture's different definition levels).
+                               */
 class FilesByDirNameIndex {
-  _filesByDirName: Map<string, Array<string>>;
 
-  constructor(allFilePaths: Array<string>) {
+
+  constructor(allFilePaths) {
     this._filesByDirName = new Map();
     for (let i = 0; i < allFilePaths.length; ++i) {
       const filePath = allFilePaths[i];
@@ -40,9 +40,9 @@ class FilesByDirNameIndex {
     }
   }
 
-  getAllFiles(dirPath: string): $ReadOnlyArray<string> {
+  getAllFiles(dirPath) {
     return this._filesByDirName.get(dirPath) || [];
-  }
-}
+  }}
+
 
 module.exports = FilesByDirNameIndex;

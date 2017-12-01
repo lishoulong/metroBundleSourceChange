@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  */
 'use strict';
 
@@ -14,11 +14,11 @@ const optimizeModule = require('./worker/optimize-module');
 const transformModule = require('./worker/transform-module');
 const wrapWorkerFn = require('./worker/wrap-worker-fn');
 
-import type {OptimizationOptions} from './worker/optimize-module';
-import type {TransformOptions} from './worker/transform-module';
-import type {WorkerFnWithIO} from './worker/wrap-worker-fn';
+
+
+
 
 exports.optimizeModule =
-  (wrapWorkerFn(optimizeModule): WorkerFnWithIO<OptimizationOptions>);
+wrapWorkerFn(optimizeModule);
 exports.transformModule =
-  (wrapWorkerFn(transformModule): WorkerFnWithIO<TransformOptions<{+retainLines?: boolean}>>);
+wrapWorkerFn(transformModule);

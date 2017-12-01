@@ -6,10 +6,10 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  */
 
-'use strict';
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
 const Server = require('../../Server');
 
@@ -17,73 +17,73 @@ const meta = require('./meta');
 const relativizeSourceMap = require('../../lib/relativizeSourceMap');
 const writeFile = require('./writeFile');
 
-import type Bundle from '../../Bundler/Bundle';
-import type {SourceMap} from '../../lib/SourceMap';
-import type {OutputOptions, RequestOptions} from '../types.flow';
 
-function buildBundle(packagerClient: Server, requestOptions: RequestOptions) {
-  return packagerClient.buildBundle({
-    ...Server.DEFAULT_BUNDLE_OPTIONS,
-    ...requestOptions,
-    isolateModuleIDs: true,
-  });
+
+
+
+function buildBundle(packagerClient, requestOptions) {
+  return packagerClient.buildBundle(_extends({},
+  Server.DEFAULT_BUNDLE_OPTIONS,
+  requestOptions, {
+    isolateModuleIDs: true }));
+
 }
 
 function createCodeWithMap(
-  bundle: Bundle,
-  dev: boolean,
-  sourceMapSourcesRoot?: string,
-): {code: string, map: SourceMap} {
-  const map = bundle.getSourceMap({dev});
+bundle,
+dev,
+sourceMapSourcesRoot)
+{
+  const map = bundle.getSourceMap({ dev });
   const sourceMap = relativizeSourceMap(
-    typeof map === 'string' ? (JSON.parse(map): SourceMap) : map,
-    sourceMapSourcesRoot);
+  typeof map === 'string' ? JSON.parse(map) : map,
+  sourceMapSourcesRoot);
   return {
-    code: bundle.getSource({dev}),
-    map: sourceMap,
-  };
+    code: bundle.getSource({ dev }),
+    map: sourceMap };
+
 }
 
 function saveBundleAndMap(
-  bundle: Bundle,
-  options: OutputOptions,
-  log: (...args: Array<string>) => {},
-/* $FlowFixMe(>=0.54.0 site=react_native_fb) This comment suppresses an error
- * found when Flow v0.54 was deployed. To see the error delete this comment and
- * run Flow. */
-): Promise<> {
-  const {
-    bundleOutput,
-    bundleEncoding: encoding,
-    dev,
-    sourcemapOutput,
-    sourcemapSourcesRoot,
-  } = options;
+bundle,
+options,
+log)
+
+
+
+{const
+
+  bundleOutput =
+
+
+
+
+  options.bundleOutput,encoding = options.bundleEncoding,dev = options.dev,sourcemapOutput = options.sourcemapOutput,sourcemapSourcesRoot = options.sourcemapSourcesRoot;
 
   log('start');
   const origCodeWithMap = createCodeWithMap(bundle, !!dev, sourcemapSourcesRoot);
-  const codeWithMap = bundle.postProcessBundleSourcemap({
-    ...origCodeWithMap,
-    outFileName: bundleOutput,
-  });
+  const codeWithMap = bundle.postProcessBundleSourcemap(_extends({},
+  origCodeWithMap, {
+    outFileName: bundleOutput }));
+
   log('finish');
 
-  log('Writing bundle output to:', bundleOutput);
+  log('Writing bundle output to:', bundleOutput);const
 
-  const {code} = codeWithMap;
+  code = codeWithMap.code;
   const writeBundle = writeFile(bundleOutput, code, encoding);
   const writeMetadata = writeFile(
-    bundleOutput + '.meta',
-    meta(code, encoding),
-    'binary');
-  Promise.all([writeBundle, writeMetadata])
-    .then(() => log('Done writing bundle output'));
+  bundleOutput + '.meta',
+  meta(code, encoding),
+  'binary');
+  Promise.all([writeBundle, writeMetadata]).
+  then(() => log('Done writing bundle output'));
 
   if (sourcemapOutput) {
     log('Writing sourcemap output to:', sourcemapOutput);
-    const map = typeof codeWithMap.map !== 'string'
-      ? JSON.stringify(codeWithMap.map)
-      : codeWithMap.map;
+    const map = typeof codeWithMap.map !== 'string' ?
+    JSON.stringify(codeWithMap.map) :
+    codeWithMap.map;
     const writeMap = writeFile(sourcemapOutput, map, null);
     writeMap.then(() => log('Done writing sourcemap output'));
     return Promise.all([writeBundle, writeMetadata, writeMap]);

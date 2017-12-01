@@ -6,142 +6,142 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
-'use strict';
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};function _asyncToGenerator(fn) {return function () {var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {function step(key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {return Promise.resolve(value).then(function (value) {step("next", value);}, function (err) {step("throw", err);});}}return step("next");});};}
 
 const blacklist = require('./blacklist');
-const path = require('path');
+const path = require('path');var _require =
 
-const {providesModuleNodeModules} = require('./defaults');
+require('./defaults');const providesModuleNodeModules = _require.providesModuleNodeModules;
 
-import type {
-  GetTransformOptions,
-  PostMinifyProcess,
-  PostProcessModules,
-  PostProcessBundleSourcemap,
-} from './Bundler';
-import type {PostProcessModules as PostProcessModulesForBuck} from './ModuleGraph/types.flow.js';
-import type {TransformVariants} from './ModuleGraph/types.flow';
-import type {HasteImpl} from './node-haste/Module';
 
-export type ConfigT = {
-  extraNodeModules: {[id: string]: string},
-  /**
-   * Specify any additional asset file extensions to be used by the packager.
-   * For example, if you want to include a .ttf file, you would return ['ttf']
-   * from here and use `require('./fonts/example.ttf')` inside your app.
-   */
-  getAssetExts: () => Array<string>,
 
-  /**
-   * Returns a regular expression for modules that should be ignored by the
-   * packager on a given platform.
-   */
-  getBlacklistRE(): RegExp,
 
-  /**
-   * Specify whether or not to enable Babel's behavior for looking up .babelrc
-   * files. If false, only the .babelrc file (if one exists) in the main project
-   * root is used.
-   */
-  getEnableBabelRCLookup(): boolean,
 
-  /**
-   * Specify any additional polyfill modules that should be processed
-   * before regular module loading.
-   */
-  getPolyfillModuleNames: () => Array<string>,
 
-  /**
-   * Specify any additional platforms to be used by the packager.
-   * For example, if you want to add a "custom" platform, and use modules
-   * ending in .custom.js, you would return ['custom'] here.
-   */
-  getPlatforms: () => Array<string>,
 
-  getProjectRoots(): Array<string>,
 
-  /**
-   * Specify any additional node modules that should be processed for
-   * providesModule declarations.
-   */
-  getProvidesModuleNodeModules?: () => Array<string>,
 
-  /**
-   * Specify any additional source file extensions to be used by the packager.
-   * For example, if you want to include a .ts file, you would return ['ts']
-   * from here and use `require('./module/example')` to require the file with
-   * path 'module/example.ts' inside your app.
-   */
-  getSourceExts: () => Array<string>,
 
-  /**
-   * Returns the path to a custom transformer. This can also be overridden
-   * with the --transformer commandline argument.
-   */
-  getTransformModulePath: () => string,
-  getTransformOptions: GetTransformOptions,
 
-  /**
-   * Returns the path to the worker that is used for transformation.
-   */
-  getWorkerPath: () => ?string,
 
-  /**
-   * An optional list of polyfills to include in the bundle. The list defaults
-   * to a set of common polyfills for Number, String, Array, Object...
-   */
-  getPolyfills: ({platform: ?string}) => $ReadOnlyArray<string>,
 
-  getUseGlobalHotkey: () => boolean,
 
-  /**
-   * An optional function that can modify the code and source map of bundle
-   * after the minifaction took place. (Function applied per module).
-   */
-  postMinifyProcess: PostMinifyProcess,
 
-  /**
-   * An optional function that can modify the module array before the bundle is
-   * finalized.
-   */
-  postProcessModules: PostProcessModules,
 
-  /**
-   * An optional function that can modify the code and source map of the bundle
-   * before it is written. Applied once for the entire bundle, only works if
-   * output is a plainBundle.
-   */
-  postProcessBundleSourcemap: PostProcessBundleSourcemap,
 
-  /**
-   * Same as `postProcessModules` but for the Buck worker. Eventually we do want
-   * to unify both variants.
-   */
-  postProcessModulesForBuck: PostProcessModulesForBuck,
 
-  /**
-   * A module that exports:
-   * - a `getHasteName(filePath)` method that returns `hasteName` for module at
-   *  `filePath`, or undefined if `filePath` is not a haste module.
-   */
-  hasteImpl?: HasteImpl,
 
-  transformVariants: () => TransformVariants,
 
-  /**
-   * An array of modules to be required before the entry point. It should
-   * contain the absolute path of each module.
-   */
-  runBeforeMainModule: Array<string>,
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* $FlowFixMe(>=0.56.0 site=react_native_fb) This comment suppresses an error
- * found when Flow v0.56 was deployed. To see the error delete this comment and
- * run Flow. */
-const DEFAULT = ({
+                                                                                             * found when Flow v0.56 was deployed. To see the error delete this comment and
+                                                                                             * run Flow. */
+const DEFAULT = {
   extraNodeModules: Object.create(null),
   getAssetExts: () => [],
   getBlacklistRE: () => blacklist(),
@@ -154,31 +154,30 @@ const DEFAULT = ({
   getProvidesModuleNodeModules: () => providesModuleNodeModules.slice(),
   getSourceExts: () => [],
   getTransformModulePath: () => require.resolve('./transformer.js'),
-  getTransformOptions: async () => ({}),
+  getTransformOptions: (() => {var _ref = _asyncToGenerator(function* () {return {};});return function getTransformOptions() {return _ref.apply(this, arguments);};})(),
   getPolyfills: () => [],
   getUseGlobalHotkey: () => true,
   postMinifyProcess: x => x,
   postProcessModules: modules => modules,
   postProcessModulesForBuck: modules => modules,
-  postProcessBundleSourcemap: ({code, map, outFileName}) => ({code, map}),
+  postProcessBundleSourcemap: (_ref2) => {let code = _ref2.code,map = _ref2.map,outFileName = _ref2.outFileName;return { code, map };},
   runBeforeMainModule: [],
-  transformVariants: () => ({default: {}}),
-  getWorkerPath: () => null,
-}: ConfigT);
+  transformVariants: () => ({ default: {} }),
+  getWorkerPath: () => null };
 
-const normalize = (initialConfig: ConfigT, defaults?: ConfigT): ConfigT => {
-  return {
-    ...(defaults || DEFAULT),
-    ...initialConfig,
-  };
+
+const normalize = (initialConfig, defaults) => {
+  return _extends({},
+  defaults || DEFAULT,
+  initialConfig);
+
 };
 
-const load = (configFile: string, defaults?: ConfigT) =>
-  // $FlowFixMe dynamic require
-  normalize(require(configFile), defaults);
+const load = (configFile, defaults
+// $FlowFixMe dynamic require
+) => normalize(require(configFile), defaults);
 
 module.exports = {
   DEFAULT,
   load,
-  normalize,
-};
+  normalize };

@@ -6,11 +6,11 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
-'use strict';
+'use strict';var _extends = Object.assign || function (target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i];for (var key in source) {if (Object.prototype.hasOwnProperty.call(source, key)) {target[key] = source[key];}}}return target;};
 
 const Config = require('./Config');
 const Logger = require('./Logger');
@@ -18,118 +18,118 @@ const TransformCaching = require('./lib/TransformCaching');
 
 const blacklist = require('./blacklist');
 const debug = require('debug');
-const invariant = require('fbjs/lib/invariant');
+const invariant = require('fbjs/lib/invariant');var _require =
 
-const {fromRawMappings, compactMapping} = require('./Bundler/source-map');
+require('./Bundler/source-map');const fromRawMappings = _require.fromRawMappings,compactMapping = _require.compactMapping;
 
-import type {ConfigT as MetroConfig} from './Config';
-import type Server, {Options as ServerOptions} from './Server';
-import type {TransformCache} from './lib/TransformCaching';
+
+
+
 
 exports.createBlacklist = blacklist;
-exports.sourceMaps = {fromRawMappings, compactMapping};
+exports.sourceMaps = { fromRawMappings, compactMapping };
 exports.createServer = createServer;
 exports.Config = Config;
 exports.Logger = Logger;
 
-export type ConfigT = MetroConfig;
-type Options = {|
-  ...ServerOptions,
-  // optional types to force flow errors in `toServerOptions`
-  nonPersistent?: ?boolean,
-  transformCache?: ?TransformCache,
-  verbose?: ?boolean,
-|};
 
-type PublicBundleOptions = {
-  +dev?: boolean,
-  +entryFile: string,
-  +generateSourceMaps?: boolean,
-  +inlineSourceMap?: boolean,
-  +minify?: boolean,
-  +platform?: string,
-  +runModule?: boolean,
-  +sourceMapUrl?: string,
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 exports.TransformCaching = TransformCaching;
 
 /**
- * This is a public API, so we don't trust the value and purposefully downgrade
- * it as `mixed`. Because it understands `invariant`, Flow ensure that we
- * refine these values completely.
- */
-function assertPublicBundleOptions(bo: mixed): PublicBundleOptions {
+                                              * This is a public API, so we don't trust the value and purposefully downgrade
+                                              * it as `mixed`. Because it understands `invariant`, Flow ensure that we
+                                              * refine these values completely.
+                                              */
+function assertPublicBundleOptions(bo) {
   invariant(
-    typeof bo === 'object' && bo != null,
-    'bundle options must be an object',
-  );
+  typeof bo === 'object' && bo != null,
+  'bundle options must be an object');
+
   invariant(
-    bo.dev === undefined || typeof bo.dev === 'boolean',
-    'bundle options field `dev` must be a boolean',
-  );
-  const {entryFile} = bo;
+  bo.dev === undefined || typeof bo.dev === 'boolean',
+  'bundle options field `dev` must be a boolean');const
+
+  entryFile = bo.entryFile;
   invariant(
-    typeof entryFile === 'string',
-    'bundle options must contain a string field `entryFile`',
-  );
+  typeof entryFile === 'string',
+  'bundle options must contain a string field `entryFile`');
+
   invariant(
-    bo.generateSourceMaps === undefined ||
-      typeof bo.generateSourceMaps === 'boolean',
-    'bundle options field `generateSourceMaps` must be a boolean',
-  );
+  bo.generateSourceMaps === undefined ||
+  typeof bo.generateSourceMaps === 'boolean',
+  'bundle options field `generateSourceMaps` must be a boolean');
+
   invariant(
-    bo.inlineSourceMap === undefined || typeof bo.inlineSourceMap === 'boolean',
-    'bundle options field `inlineSourceMap` must be a boolean',
-  );
+  bo.inlineSourceMap === undefined || typeof bo.inlineSourceMap === 'boolean',
+  'bundle options field `inlineSourceMap` must be a boolean');
+
   invariant(
-    bo.minify === undefined || typeof bo.minify === 'boolean',
-    'bundle options field `minify` must be a boolean',
-  );
+  bo.minify === undefined || typeof bo.minify === 'boolean',
+  'bundle options field `minify` must be a boolean');
+
   invariant(
-    bo.platform === undefined || typeof bo.platform === 'string',
-    'bundle options field `platform` must be a string',
-  );
+  bo.platform === undefined || typeof bo.platform === 'string',
+  'bundle options field `platform` must be a string');
+
   invariant(
-    bo.runModule === undefined || typeof bo.runModule === 'boolean',
-    'bundle options field `runModule` must be a boolean',
-  );
+  bo.runModule === undefined || typeof bo.runModule === 'boolean',
+  'bundle options field `runModule` must be a boolean');
+
   invariant(
-    bo.sourceMapUrl === undefined || typeof bo.sourceMapUrl === 'string',
-    'bundle options field `sourceMapUrl` must be a boolean',
-  );
-  return {entryFile, ...bo};
+  bo.sourceMapUrl === undefined || typeof bo.sourceMapUrl === 'string',
+  'bundle options field `sourceMapUrl` must be a boolean');
+
+  return _extends({ entryFile }, bo);
 }
 
-exports.buildBundle = function(
-  options: Options,
-  bundleOptions: PublicBundleOptions,
-) {
+exports.buildBundle = function (
+options,
+bundleOptions)
+{
   var server = createNonPersistentServer(options);
   const ServerClass = require('./Server');
-  return server
-    .buildBundle({
-      ...ServerClass.DEFAULT_BUNDLE_OPTIONS,
-      ...assertPublicBundleOptions(bundleOptions),
-    })
-    .then(p => {
-      server.end();
-      return p;
-    });
+  return server.
+  buildBundle(_extends({},
+  ServerClass.DEFAULT_BUNDLE_OPTIONS,
+  assertPublicBundleOptions(bundleOptions))).
+
+  then(p => {
+    server.end();
+    return p;
+  });
 };
 
-exports.getOrderedDependencyPaths = function(
-  options: Options,
-  depOptions: {
-    +entryFile: string,
-    +dev: boolean,
-    +platform: string,
-    +minify: boolean,
-    +generateSourceMaps: boolean,
-  },
-) {
+exports.getOrderedDependencyPaths = function (
+options,
+depOptions)
+
+
+
+
+
+
+{
   var server = createNonPersistentServer(options);
-  return server.getOrderedDependencyPaths(depOptions).then(function(paths) {
+  return server.getOrderedDependencyPaths(depOptions).then(function (paths) {
     server.end();
     return paths;
   });
@@ -149,7 +149,7 @@ function enableDebug() {
   debug.enable(debugPattern);
 }
 
-function createServer(options: Options): Server {
+function createServer(options) {
   // the debug module is configured globally, we need to enable debugging
   // *before* requiring any packages that use `debug` for logging
   if (options.verbose) {
@@ -158,19 +158,19 @@ function createServer(options: Options): Server {
 
   // Some callsites may not be Flowified yet.
   invariant(
-    options.assetRegistryPath != null,
-    'createServer() requires assetRegistryPath',
-  );
+  options.assetRegistryPath != null,
+  'createServer() requires assetRegistryPath');
+
 
   const ServerClass = require('./Server');
   return new ServerClass(toServerOptions(options));
 }
 
-function createNonPersistentServer(options: Options): Server {
+function createNonPersistentServer(options) {
   return createServer(options);
 }
 
-function toServerOptions(options: Options): ServerOptions {
+function toServerOptions(options) {
   return {
     assetExts: options.assetExts,
     assetRegistryPath: options.assetRegistryPath,
@@ -200,9 +200,9 @@ function toServerOptions(options: Options): ServerOptions {
     transformModulePath: options.transformModulePath,
     useDeltaBundler: options.useDeltaBundler,
     watch:
-      typeof options.watch === 'boolean'
-        ? options.watch
-        : !!options.nonPersistent,
-    workerPath: options.workerPath,
-  };
+    typeof options.watch === 'boolean' ?
+    options.watch :
+    !!options.nonPersistent,
+    workerPath: options.workerPath };
+
 }

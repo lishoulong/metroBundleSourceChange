@@ -6,9 +6,9 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 'use strict';
 
-module.exports.transform = (file: {src: string}) => ({code: file.src});
+module.exports.transform = file => ({ code: file.src });

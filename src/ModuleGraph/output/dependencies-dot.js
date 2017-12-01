@@ -6,15 +6,15 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-import type {Module} from '../types.flow';
 
-function dependenciesDot({modules}: {+modules: Iterable<Module>}) {
+
+function dependenciesDot(_ref) {let modules = _ref.modules;
   const list = [];
 
   // Opening digraph.

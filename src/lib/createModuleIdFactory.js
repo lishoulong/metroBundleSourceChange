@@ -12,11 +12,11 @@
 'use strict';
 const crypto = require('crypto');
 
-function createModuleIdFactory(projectRoots): ({path: string}) => number {
+function createModuleIdFactory(projectRoots) {
   const fileToIdMap = new Map();
   // let nextId = 0;
   const usedIds = {};
-  return ({path: modulePath}) => {
+  return (_ref) => {let modulePath = _ref.path;
     if (!fileToIdMap.has(modulePath)) {
       fileToIdMap.set(modulePath, getModuleHashedPathId(modulePath, usedIds));
       // nextId += 1;
@@ -30,7 +30,7 @@ function getRelativePath(projectRoots, modulePath) {
   return modulePath.replace(rex, '');
 }
 
-function getModuleHashedPathId(path, usedIds){
+function getModuleHashedPathId(path, usedIds) {
   var len = 4;
   var hash = crypto.createHash("md5");
   hash.update(path);

@@ -6,32 +6,31 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @flow
+ * 
  * @format
  */
 
 'use strict';
 
-module.exports = class AsyncTaskGroup<TTaskHandle> {
-  _runningTasks: Set<TTaskHandle>;
-  _resolve: ?() => void;
-  done: Promise<void>;
+module.exports = class AsyncTaskGroup {
+
+
+
 
   constructor() {
     this._runningTasks = new Set();
     this._resolve = null;
-    this.done = new Promise(resolve => (this._resolve = resolve));
+    this.done = new Promise(resolve => this._resolve = resolve);
   }
 
-  start(taskHandle: TTaskHandle) {
+  start(taskHandle) {
     this._runningTasks.add(taskHandle);
   }
 
-  end(taskHandle: TTaskHandle) {
+  end(taskHandle) {
     const runningTasks = this._runningTasks;
     if (runningTasks.delete(taskHandle) && runningTasks.size === 0) {
       /* $FlowFixMe: could be null */
       this._resolve();
     }
-  }
-};
+  }};
