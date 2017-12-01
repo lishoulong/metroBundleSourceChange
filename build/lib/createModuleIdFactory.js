@@ -17,8 +17,9 @@ function createModuleIdFactory(projectRoots) {
   // let nextId = 0;
   const usedIds = {};
   return (_ref) => {let modulePath = _ref.path;
+    const relativePath = getRelativePath(projectRoots, modulePath);
     if (!fileToIdMap.has(modulePath)) {
-      fileToIdMap.set(modulePath, getModuleHashedPathId(modulePath, usedIds));
+      fileToIdMap.set(modulePath, getModuleHashedPathId(relativePath, usedIds));
       // nextId += 1;
     }
     return fileToIdMap.get(modulePath);
@@ -31,8 +32,8 @@ function getRelativePath(projectRoots, modulePath) {
 }
 
 function getModuleHashedPathId(path, usedIds) {
-  var len = 4;
-  var hash = crypto.createHash("md5");
+  let len = 4;
+  const hash = crypto.createHash("md5");
   hash.update(path);
   let id = hash.digest("hex");
   while (usedIds[id.substr(0, len)]) {
