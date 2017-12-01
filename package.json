@@ -1,5 +1,4 @@
 {
-  "name": "metro-bundler",
   "private": true,
   "devDependencies": {
     "babel-core": "^6.23.1",
@@ -62,6 +61,5 @@
       "<rootDir>/scripts/setupJest.js"
     ],
     "testEnvironment": "node"
-  },
-  "version": "0.20.9"
+  }
 }
