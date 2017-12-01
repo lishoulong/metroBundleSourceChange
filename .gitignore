@@ -1,7 +1,0 @@
-.eslintcache
-/node_modules
-/packages/*/node_modules/
-/coverage
-lerna-debug.log
-npm-debug.log*
-*.DS_Store

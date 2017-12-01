@@ -1,18 +1,10 @@
 {
-  "extends": "eslint-config-fb-strict",
-  "plugins": [
-    "prettier"
-  ],
-  "parser": "babel-eslint",
   "rules": {
-    "prettier/prettier": [
-      "error",
-      "fb",
-      "@format"
-    ],
-    "max-len": 0,
-    "no-var": 0,
-    "prefer-arrow-callback": 0,
-    "sort-keys": 0
+    "extra-arrow-initializer": 0,
+    "no-alert": 0,
+    "no-console-disallow": 0
+  },
+  "env": {
+    "node": true
   }
 }
