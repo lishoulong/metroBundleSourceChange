@@ -62,5 +62,6 @@
       "<rootDir>/scripts/setupJest.js"
     ],
     "testEnvironment": "node"
-  }
+  },
+  "version": "0.20.9"
 }
