@@ -17,8 +17,9 @@ function createModuleIdFactory(projectRoots): ({path: string}) => number {
   // let nextId = 0;
   const usedIds = {};
   return ({path: modulePath}) => {
+    const relativePath = getRelativePath(projectRoots, modulePath);
     if (!fileToIdMap.has(modulePath)) {
-      fileToIdMap.set(modulePath, getModuleHashedPathId(modulePath, usedIds));
+      fileToIdMap.set(modulePath, getModuleHashedPathId(relativePath, usedIds));
       // nextId += 1;
     }
     return fileToIdMap.get(modulePath);
