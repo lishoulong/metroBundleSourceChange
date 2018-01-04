@@ -40,9 +40,25 @@ function getModuleHashedPathId(path, usedIds) {
     len++;
   }
   id = id.substr(0, len);
-  usedIds[id] = path;
   id = parseInt(id, 16);
+  id = getStr(id, usedIds);
+  usedIds[id] = path;
   return id;
 }
 
+function getStr(nums, usedIds) {
+  var testThree = /([0]){3}/;
+  var testFour = /([0]){4}/;
+  var strNum = JSON.stringify(nums)
+  if(testThree.test(strNum)){
+      nums = nums + 111;
+  }
+  if(testFour.test(strNum)){
+      nums = nums + 1111;
+  }
+  while (usedIds[nums]){
+    nums += 1;
+  }
+  return nums;
+}
 module.exports = createModuleIdFactory;
